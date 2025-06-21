@@ -1,0 +1,111 @@
+{
+    "asset": {
+        "version": "2.0",
+        "generator": "Blockbench 4.12.4 glTF exporter"
+    },
+    "scenes": [{ "nodes": [1], "name": "blockbench_export" }],
+    "scene": 0,
+    "nodes": [{ "name": "pyramid", "mesh": 0 }, { "children": [0] }],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 192,
+            "target": 34962,
+            "byteStride": 12
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 192,
+            "byteLength": 192,
+            "target": 34962,
+            "byteStride": 12
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 384,
+            "byteLength": 128,
+            "target": 34962,
+            "byteStride": 8
+        },
+        { "buffer": 0, "byteOffset": 512, "byteLength": 36, "target": 34963 }
+    ],
+    "buffers": [
+        {
+            "byteLength": 548,
+            "uri": "data:application/octet-stream;base64,AAAYPwAAAAAAABg/AAAYvwAAAAAAABg/AAAYPwAAAAAAABi/AAAYvwAAAAAAABi/AAAYPwAAAAAAABg/AAAYPwAAAAAAABi/AAAAAAAAcD8AAAAAAAAYvwAAAAAAABg/AAAYPwAAAAAAABg/AAAAAAAAcD8AAAAAAAAYPwAAAAAAABi/AAAYvwAAAAAAABi/AAAAAAAAcD8AAAAAAAAYvwAAAAAAABi/AAAYvwAAAAAAABg/AAAAAAAAcD8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAEEZYPyz5CD8AAAAAEEZYPyz5CD8AAAAAEEZYPyz5CD8AAAAAAAAAgCz5CD8QRlg/AAAAgCz5CD8QRlg/AAAAgCz5CD8QRlg/AAAAACz5CD8QRli/AAAAACz5CD8QRli/AAAAACz5CD8QRli/EEZYvyz5CD8AAAAAEEZYvyz5CD8AAAAAEEZYvyz5CD8AAAAAAACYPgAAAAAAAAAAAAAAAAAAmD4AAJg+AAAAAAAAmD5FVug+zGsyPyIrQD/MazI/IisaP77M1j6JrHA+mNf0PiIrCD+Y1/Q+RVbEPnyZTT5FVvA+mNeCPiIrRD+Y14I+IisePwAAAAAlsgI9zGs2P0VWqD7MazY/iaw4Pr7M3j4CAAAAAQACAAEAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwA="
+        }
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "componentType": 5126,
+            "count": 16,
+            "max": [0.59375, 0.9375, 0.59375],
+            "min": [-0.59375, 0, -0.59375],
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 1,
+            "componentType": 5126,
+            "count": 16,
+            "max": [0.8448190689086914, 0.5350520610809326, 0.8448190689086914],
+            "min": [-0.8448190689086914, -1, -0.8448190689086914],
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 2,
+            "componentType": 5126,
+            "count": 16,
+            "max": [0.7662831544876099, 0.7125823497772217],
+            "min": [0, 0],
+            "type": "VEC2"
+        },
+        {
+            "bufferView": 3,
+            "componentType": 5123,
+            "count": 18,
+            "max": [15],
+            "min": [0],
+            "type": "SCALAR"
+        }
+    ],
+    "materials": [
+        {
+            "pbrMetallicRoughness": {
+                "metallicFactor": 0,
+                "roughnessFactor": 1,
+                "baseColorTexture": { "index": 0 }
+            },
+            "alphaMode": "MASK",
+            "alphaCutoff": 0.05,
+            "doubleSided": true
+        }
+    ],
+    "textures": [{ "sampler": 0, "source": 0, "name": "texture" }],
+    "samplers": [
+        { "magFilter": 9728, "minFilter": 9728, "wrapS": 33071, "wrapT": 33071 }
+    ],
+    "images": [
+        {
+            "mimeType": "image/png",
+            "uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAx9JREFUeF7tWVGu5CAMm97/0H2iaqsUSOxAoEiv+7GrnXaI45gQM9vv99t/6a/9+Kf6Z9s2+Pz84qYu4nyw7/ue4sp102fp/5t44Fy2eD1FWJKAC1etOKEECFbVKlsKkM+igCFMUXEONV3BTmlVSdAIyD+PAEbiCdtqDwI0EmoEKJ91A3udgBoJlUprSukiQCYPFNkVR3bCQgF32xWdP9vnVq9oBpYn/zoBEsBFAHEcugmoJV4rwqNqkcegBeAi4QpuzQot5zMTuxYzotnKAUOfgPxTBqUAlDhSQAvZ6pCHwEi1RSgAxcukPqTfUE1wVA+IIiBKBTNOgbTFHluDJWFE0823QpUAdO4bk2HeA2R/KfoDIgIREKGC0ZNgQQCa89keIBtlrjBP7x7mBVCiZHVNGy6Oaer0qRFzE8A6vmIPPSfGAwia56+ThThVxhMw4j4AEcDuXa1HDBmEom6Eog2N4hGaJV8o2NMwmHejCRBj+N1QoxXA5EW9M8PRnXeFayngbUdHVUd5qZvJ1mEmUsavEIASn+nophPAJi8NVXUICbzYaCWhaQtEEcDOA63JMd9rIiCf9qxAaOQ1ekHhIpmEvO94CXBbW0SAogLTRXqTNAvkWEx1dj0KEM1SFsNykd6imSlSi53Dh1zoMFFkdV2GhnCRFGa2sNRiGqhoAqJMFJv8sf3Qy72gPI6uNxbKpXoUoy9FgGIc3SgThfIzFRANKiPTvCh13DuiHNua4Ehnlzu6kbEQO6oCZoBawUW6rqojZYnG6chY9CDUCsoz06MYYjAa/rPYfQzOAsXGOQmdQ0AUKEYFM2Oh5ncrLRJUJAnklAkHOURE8UNGr7Fhr7oQ8VMJSEkjQGhfPpwSvumB4UgCqHGePQXCQKUfWTQljHKRSOra83sLsIyzv+d9BOBtYBbN4yJbq+/eP7NAXQkxLrIneTcBWrNkO38rWMtFtq55zwGtC4wEpWHKXWQr9seJ1bvICFC9mDzf756kPMFWfPcjYMWqzMT0KWAm2yvG+hSwYlVmYvoUMJPtFWN9ClixKjMxfQqYyfaKsf69Av4APSf0X8XX+PEAAAAASUVORK5CYII="
+        }
+    ],
+    "meshes": [
+        {
+            "primitives": [
+                {
+                    "mode": 4,
+                    "attributes": {
+                        "POSITION": 0,
+                        "NORMAL": 1,
+                        "TEXCOORD_0": 2
+                    },
+                    "indices": 3,
+                    "material": 0
+                }
+            ]
+        }
+    ]
+}

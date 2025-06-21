@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>WASM Host</title>
+    <!-- Preload 3D assets before WASM initialization -->
+    <script src="/preload-assets.js"></script>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background-color: transparent;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="monster-view-canvas"></canvas>
+
+    <script type="module">
+      // --- Get Instance Config ---
+      const urlParams = new URLSearchParams(window.location.search);
+      const jsPath = urlParams.get('jsPath');
+      const wasmPath = urlParams.get('wasmPath');
+      const instanceId =
+        urlParams.get('instanceId') || 'unknown-iframe-' + Date.now();
+      const debugLogging = urlParams.get('debug') === 'true';
+
+      function log(message, ...args) {
+        if (debugLogging) {
+          console.log('[Iframe ' + instanceId + '] ' + message, ...args);
+        }
+      }
+
+      log('Host page script running.');
+      log('Config - jsPath:', jsPath, ', wasmPath:', wasmPath);
+
+      // --- Iframe-Local Event Queue and Handlers ---
+      let iframeEventQueue = [];
+
+      // Function for WASM to poll for events (via global OR import)
+      function iframePollJsEvent() {
+        const event = iframeEventQueue.shift();
+        return event || 'Empty';
+      }
+
+      // Function for WASM to send events out (via global OR import)
+      function iframeReceiveWasmEvent(event) {
+        log('Event received from WASM:', event);
+        // Send event TO parent window, including instanceId
+        window.parent.postMessage(
+          { type: 'WASM_EVENT', payload: { instanceId, event } },
+          '*'
+        );
+      }
+
+      // --- Define Globals *Locally* within this Iframe's Window Scope ---
+      // This intercepts calls if WASM ignores imports and uses globals at runtime.
+      window.wasm_event = iframePollJsEvent;
+      window.web_event = iframeReceiveWasmEvent;
+      log('Local window.wasm_event / window.web_event defined.');
+      // --- End Local Global Definition ---
+
+      // --- Parent Communication Setup ---
+      function notifyParent(type, payload) {
+        window.parent.postMessage(
+          { type, payload: { instanceId, ...payload } },
+          '*'
+        );
+      }
+
+      window.addEventListener('message', (event) => {
+        const message = event.data;
+        if (!message || typeof message !== 'object') return;
+
+        switch (message.type) {
+          case 'QUEUE_WASM_EVENT':
+            if (message.payload) {
+              log('Queueing event from parent:', message.payload);
+              let processedEvent = { ...message.payload };
+              if (
+                processedEvent.ViewModel &&
+                typeof processedEvent.ViewModel !== 'string'
+              ) {
+                processedEvent = {
+                  ViewModel: JSON.stringify(processedEvent.ViewModel),
+                };
+              }
+              iframeEventQueue.push(processedEvent);
+            }
+            break;
+        }
+      });
+
+      // --- WASM Initialization ---
+      async function initializeWasm() {
+        if (!jsPath || !wasmPath) {
+          const errorMsg = 'Missing jsPath or wasmPath URL parameters.';
+          console.error('[Iframe ' + instanceId + '] ' + errorMsg);
+          notifyParent('WASM_ERROR', { error: errorMsg });
+          return;
+        }
+
+        // Make sure preloading is complete before proceeding
+        if (!sessionStorage.getItem('modelPreloaded')) {
+          log('Waiting for asset preloading to complete...');
+          await new Promise((resolve) => {
+            const checkPreload = setInterval(() => {
+              if (sessionStorage.getItem('modelPreloaded')) {
+                clearInterval(checkPreload);
+                log('Assets preloaded, continuing WASM initialization');
+                resolve();
+              }
+            }, 100);
+            // Timeout after 5 seconds
+            setTimeout(() => {
+              clearInterval(checkPreload);
+              log('Asset preload timed out, continuing anyway');
+              resolve();
+            }, 5000);
+          });
+        } else {
+          log('Assets already preloaded');
+        }
+
+        log('Importing init from ' + jsPath + '...');
+        try {
+          const initModule = await import(jsPath);
+          const init = initModule.default; // Or named export if needed
+
+          if (typeof init !== 'function') {
+            throw new Error('WASM init function not found in ' + jsPath);
+          }
+
+          log('Calling WASM init function...');
+          await init(wasmPath); // Call init with default imports
+
+          log(
+            'WASM init completed/resolved (may have included control flow exception).'
+          );
+          notifyParent('IFRAME_READY', {});
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+
+          const isControlFlowException = errorMessage.includes(
+            'Using exceptions for control flow'
+          );
+
+          if (isControlFlowException) {
+            console.warn(
+              '[Iframe ' +
+                instanceId +
+                '] Caught known control flow exception during init. Treating as success.'
+            );
+            notifyParent('IFRAME_READY', {});
+          } else {
+            console.error(
+              '[Iframe ' + instanceId + '] WASM Initialization failed:',
+              error
+            );
+            notifyParent('WASM_ERROR', { error: errorMessage });
+          }
+        }
+      }
+
+      initializeWasm();
+    </script>
+  </body>
+</html>
