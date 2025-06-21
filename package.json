@@ -1,7 +1,7 @@
 {
-  "name": "daemon-frontend",
-  "version": "0.0.1",
-  "description": "",
+  "name": "daemon-os",
+  "version": "0.5.0",
+  "description": "A simulated operating system that runs on the web for the Daemon platform. [Live link](https://os.daemon.computer)",
   "type": "module",
   "scripts": {
     "start": "vite",

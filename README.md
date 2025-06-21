@@ -1,4 +1,14 @@
-# Setting Up Your Development Environment
+# Daemon Operating System Page
+
+This website is built using the following technologies:
+1. SolidJS
+2. TailwindCSS
+3. Typescript
+4. InteractJS
+5. @mysten/sui
+6. @mysten/wallet-standard
+
+## Setting up your Development Environment
 
 ### Prerequisites
 
@@ -74,11 +84,5 @@ If you encounter problems, here are some common solutions:
    - Save all pending changes
    - Review terminal output for specific errors
    - Run `bun install` to update dependencies
-
-## Important Note About Dependencies
-
-You might notice a `pnpm-lock.yaml` file in the project. This file exists because the project templates were originally maintained using pnpm.
-
-They advise to keep it in, so it just lives here now I guess. Give it a couple of love tugs it you want.
 
 ### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
