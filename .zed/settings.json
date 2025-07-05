@@ -1,0 +1,69 @@
+{
+  "format_on_save": "on",
+  "formatter": "auto",
+  "tab_size": 2,
+  "languages": {
+    "JavaScript": {
+      "formatter": [
+        {
+          "external": {
+            "command": "npx",
+            "arguments": ["prettier", "--stdin-filepath", "{buffer_path}"]
+          }
+        },
+        {
+          "code_actions": {
+            "source.fixAll.eslint": true
+          }
+        }
+      ],
+      "format_on_save": "on"
+    },
+    "TypeScript": {
+      "formatter": [
+        {
+          "external": {
+            "command": "npx",
+            "arguments": ["prettier", "--stdin-filepath", "{buffer_path}"]
+          }
+        },
+        {
+          "code_actions": {
+            "source.fixAll.eslint": true
+          }
+        }
+      ],
+      "format_on_save": "on"
+    },
+    "TSX": {
+      "formatter": [
+        {
+          "external": {
+            "command": "npx",
+            "arguments": ["prettier", "--stdin-filepath", "{buffer_path}"]
+          }
+        },
+        {
+          "code_actions": {
+            "source.fixAll.eslint": true
+          }
+        }
+      ],
+      "format_on_save": "on"
+    }
+  },
+  "file_scan_exclusions": [
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/node_modules",
+    "**/dist",
+    "**/build",
+    "**/.next",
+    "**/coverage",
+    "**/.turbo"
+  ]
+}
