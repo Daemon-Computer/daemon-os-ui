@@ -106,7 +106,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              labels: ['branch-protection-violation', 'needs-attention']
+              labels: ['branch-protection-violation']
             });
 
       - name: Optional - Auto-close PR
@@ -125,5 +125,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: '🔒 This PR has been automatically closed due to branch protection rules. Please follow the correct workflow and create a new PR.'
+              body: 'This PR has been automatically closed due to branch protection rules. Please follow the correct workflow and create a new PR.'
             });
