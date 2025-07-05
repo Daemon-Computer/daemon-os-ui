@@ -22,31 +22,39 @@ jobs:
           # Check testnet protection
           if [[ "${{ github.base_ref }}" == "testnet" && "${{ github.head_ref }}" != "main" ]]; then
             echo "violation=testnet" >> $GITHUB_OUTPUT
-            echo "message=❌ **Branch Protection Violation**
-
-            You are trying to merge from \`${{ github.head_ref }}\` to \`testnet\`, but our branch protection rules only allow merges from \`main\` to \`testnet\`.
-
-            **Correct workflow:**
-            1. Merge your changes to \`main\` first
-            2. Then create a PR from \`main\` to \`testnet\`
-
-            This ensures proper code flow and testing procedures." >> $GITHUB_OUTPUT
+            {
+              echo 'message<<EOF'
+              echo "❌ **Branch Protection Violation**"
+              echo ""
+              echo "You are trying to merge from \`${{ github.head_ref }}\` to \`testnet\`, but our branch protection rules only allow merges from \`main\` to \`testnet\`."
+              echo ""
+              echo "**Correct workflow:**"
+              echo "1. Merge your changes to \`main\` first"
+              echo "2. Then create a PR from \`main\` to \`testnet\`"
+              echo ""
+              echo "This ensures proper code flow and testing procedures."
+              echo 'EOF'
+            } >> $GITHUB_OUTPUT
             exit 1
           fi
 
           # Check mainnet protection
           if [[ "${{ github.base_ref }}" == "mainnet" && "${{ github.head_ref }}" != "testnet" ]]; then
             echo "violation=mainnet" >> $GITHUB_OUTPUT
-            echo "message=❌ **Branch Protection Violation**
-
-            You are trying to merge from \`${{ github.head_ref }}\` to \`mainnet\`, but our branch protection rules only allow merges from \`testnet\` to \`mainnet\`.
-
-            **Correct workflow:**
-            1. Ensure your changes are in \`testnet\` first
-            2. Test thoroughly on testnet
-            3. Then create a PR from \`testnet\` to \`mainnet\`
-
-            This ensures all changes go through our testing pipeline before reaching production." >> $GITHUB_OUTPUT
+            {
+              echo 'message<<EOF'
+              echo "❌ **Branch Protection Violation**"
+              echo ""
+              echo "You are trying to merge from \`${{ github.head_ref }}\` to \`mainnet\`, but our branch protection rules only allow merges from \`testnet\` to \`mainnet\`."
+              echo ""
+              echo "**Correct workflow:**"
+              echo "1. Ensure your changes are in \`testnet\` first"
+              echo "2. Test thoroughly on testnet"
+              echo "3. Then create a PR from \`testnet\` to \`mainnet\`"
+              echo ""
+              echo "This ensures all changes go through our testing pipeline before reaching production."
+              echo 'EOF'
+            } >> $GITHUB_OUTPUT
             exit 1
           fi
 
