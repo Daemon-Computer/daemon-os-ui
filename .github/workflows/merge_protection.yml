@@ -20,6 +20,25 @@ jobs:
           echo "Head branch: ${{ github.head_ref }}"
 
           # Check testnet protection
+          if [[ "${{ github.base_ref }}" == "main" && "${{ github.head_ref }}" != "dev" ]]; then
+            echo "violation=testnet" >> $GITHUB_OUTPUT
+            {
+              echo 'message<<EOF'
+              echo "❌ **Branch Protection Violation**"
+              echo ""
+              echo "You are trying to merge from \`${{ github.head_ref }}\` to \`main\`, but our branch protection rules only allow merges from \`dev\` to \`main\`."
+              echo ""
+              echo "**Correct workflow:**"
+              echo "1. Merge your changes to \`dev\` first"
+              echo "2. Then create a PR from \`dev\` to \`main\`"
+              echo ""
+              echo "This ensures proper code flow and testing procedures."
+              echo 'EOF'
+            } >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          # Check testnet protection
           if [[ "${{ github.base_ref }}" == "testnet" && "${{ github.head_ref }}" != "main" ]]; then
             echo "violation=testnet" >> $GITHUB_OUTPUT
             {
