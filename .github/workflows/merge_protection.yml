@@ -1,0 +1,129 @@
+name: Branch Protection Enforcement
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write # Allows creating/updating the PR itself
+  issues: write # Allows commenting, labeling, and closing PRs
+  contents: read # Allows reading the repository content
+
+jobs:
+  enforce_branch_protection:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch protection rules
+        id: check_branches
+        run: |
+          echo "Base branch: ${{ github.base_ref }}"
+          echo "Head branch: ${{ github.head_ref }}"
+
+          # Check testnet protection
+          if [[ "${{ github.base_ref }}" == "testnet" && "${{ github.head_ref }}" != "main" ]]; then
+            echo "violation=testnet" >> $GITHUB_OUTPUT
+            {
+              echo 'message<<EOF'
+              echo "❌ **Branch Protection Violation**"
+              echo ""
+              echo "You are trying to merge from \`${{ github.head_ref }}\` to \`testnet\`, but our branch protection rules only allow merges from \`main\` to \`testnet\`."
+              echo ""
+              echo "**Correct workflow:**"
+              echo "1. Merge your changes to \`main\` first"
+              echo "2. Then create a PR from \`main\` to \`testnet\`"
+              echo ""
+              echo "This ensures proper code flow and testing procedures."
+              echo 'EOF'
+            } >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          # Check mainnet protection
+          if [[ "${{ github.base_ref }}" == "mainnet" && "${{ github.head_ref }}" != "testnet" ]]; then
+            echo "violation=mainnet" >> $GITHUB_OUTPUT
+            {
+              echo 'message<<EOF'
+              echo "❌ **Branch Protection Violation**"
+              echo ""
+              echo "You are trying to merge from \`${{ github.head_ref }}\` to \`mainnet\`, but our branch protection rules only allow merges from \`testnet\` to \`mainnet\`."
+              echo ""
+              echo "**Correct workflow:**"
+              echo "1. Ensure your changes are in \`testnet\` first"
+              echo "2. Test thoroughly on testnet"
+              echo "3. Then create a PR from \`testnet\` to \`mainnet\`"
+              echo ""
+              echo "This ensures all changes go through our testing pipeline before reaching production."
+              echo 'EOF'
+            } >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          echo "No violations detected. PR is following correct branch flow."
+
+      - name: Comment on PR with violation details
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const message = `${{ steps.check_branches.outputs.message }}`;
+
+            // Check if we already commented on this PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Branch Protection Violation')
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: message
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: message
+              });
+            }
+
+      - name: Add labels to PR
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['branch-protection-violation', 'needs-attention']
+            });
+
+      - name: Optional - Auto-close PR
+        if: failure() && github.event.action == 'opened'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              state: 'closed'
+            });
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '🔒 This PR has been automatically closed due to branch protection rules. Please follow the correct workflow and create a new PR.'
+            });
