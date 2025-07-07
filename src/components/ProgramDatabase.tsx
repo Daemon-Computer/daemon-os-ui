@@ -10,7 +10,7 @@ import type {
 import StatsList from "./StatsList";
 import { useWallet } from "./Wallet/WalletContext";
 import { SuiClient, getFullnodeUrl } from "@mysten/sui/client";
-import { PROGRAM_TYPE_STRING } from "../api/constants";
+import { PROGRAM_TYPE_STRING, WASM_ENGINE_URL, WASM_BINDINGS_URL } from "../api/constants";
 
 // Enum to match Rust-side ProgramPartName for WASM
 enum ProgramPartName {
@@ -1126,8 +1126,8 @@ export default function ProgramDatabase() {
             <Show when={webGPUSupported()}>
               <WasmIframeWrapper
                 instanceId="db-viewer-frame"
-                jsPath="/or-wasm/monster_view.js"
-                wasmPath="https://engine.daemon.computer/monster_view_bg.wasm"
+                jsPath={WASM_BINDINGS_URL}
+                wasmPath={WASM_ENGINE_URL}
                 onReady={handleViewerReady}
               />
             </Show>

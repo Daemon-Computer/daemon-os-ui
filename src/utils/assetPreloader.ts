@@ -1,3 +1,5 @@
+import { WASM_ENGINE_URL, WASM_BINDINGS_URL } from '~/api/constants';
+
 export interface AssetStatus {
     message: string;
     error?: boolean;
@@ -6,9 +8,9 @@ export interface AssetStatus {
 type StatusCallback = (status: AssetStatus) => void;
 
 const CACHE_NAME = 'daemon-assets-v1';
-const WASM_URL = 'https://engine.daemon.computer/monster_view_bg.wasm';
+const WASM_URL = WASM_ENGINE_URL;
 const WASM_ETAG_STORAGE_KEY = 'wasm-monster_view_bg-etag';
-const JS_BINDINGS_URL = '/or-wasm/monster_view.js';
+const JS_BINDINGS_URL = WASM_BINDINGS_URL;
 const JS_BINDINGS_ETAG_STORAGE_KEY = 'js-monster_view-etag';
 
 interface AssetDefinition {
@@ -20,7 +22,7 @@ interface AssetDefinition {
 // Define assets to preload
 // Paths should be relative to the public folder or absolute URLs
 const PUBLIC_ASSETS_TO_PRELOAD: AssetDefinition[] = [
-    { url: '/or-wasm/monster_view.js', name: 'WASM Bindings Script', type: 'script' },
+    { url: WASM_BINDINGS_URL, name: 'WASM Bindings Script', type: 'script' },
     { url: '/preload-assets.js', name: 'Initial Asset Preloader', type: 'script' },
     { url: '/model-worker.js', name: 'Model Worker', type: 'script' },
     { url: '/wasm_host.html', name: 'WASM Host Page', type: 'html' },

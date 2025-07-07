@@ -12,7 +12,9 @@ import {
     PROGRAM_REGISTRY_OBJECT_ID,
     PROGRAM_MINTER_OBJECT_ID,
     DISTRIBUTION_TABLE_OBJECT_ID,
-    DRIVE_MINTER_OBJECT_ID
+    DRIVE_MINTER_OBJECT_ID,
+    WASM_ENGINE_URL,
+    WASM_BINDINGS_URL
 } from '../api/constants';
 
 interface SignAndExecuteMethodHolder {
@@ -494,8 +496,8 @@ export default function DrivesAndPrograms() {
                                 <div class="h-full w-full border border-gray-300">
                                     <WasmIframeWrapper
                                         instanceId="drives-model-viewer"
-                                        jsPath='/or-wasm/monster_view.js'
-                                        wasmPath='https://engine.daemon.computer/monster_view_bg.wasm'
+                                        jsPath={WASM_BINDINGS_URL}
+                                        wasmPath={WASM_ENGINE_URL}
                                         onReady={handleWasmReady}
                                     />
                                 </div>
