@@ -1,4 +1,4 @@
-import { createSignal, onMount } from "solid-js";
+import { createSignal, onMount, Show } from "solid-js";
 
 // WebGPU type definitions
 declare global {
@@ -131,15 +131,7 @@ export default function WGPUNotificationApp() {
       </div>
 
       <div class="flex-1 overflow-auto">
-        {isChecking() ? (
-          <div class="flex items-center justify-center h-32">
-            <div class="text-center">
-              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-              <p class="text-sm text-gray-600">Checking WebGPU support...</p>
-            </div>
-          </div>
-        ) : (
-          <div class="space-y-4">
+        <Show when={isChecking()} fallback={<div class="space-y-4">
             <div
               class={`p-4 rounded border-2 ${
                 wgpuSupport().isSupported
@@ -148,20 +140,7 @@ export default function WGPUNotificationApp() {
               }`}
             >
               <div class="flex items-center mb-2">
-                {wgpuSupport().isSupported ? (
-                  <svg
-                    class="w-5 h-5 text-green-600 mr-2"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                ) : (
-                  <svg
+                <Show when={wgpuSupport().isSupported} fallback={<svg
                     class="w-5 h-5 text-red-600 mr-2"
                     fill="currentColor"
                     viewBox="0 0 20 20"
@@ -171,8 +150,17 @@ export default function WGPUNotificationApp() {
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
                       clip-rule="evenodd"
                     />
-                  </svg>
-                )}
+                  </svg>}><svg
+                    class="w-5 h-5 text-green-600 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clip-rule="evenodd"
+                    />
+                  </svg></Show>
                 <h3
                   class={`font-semibold ${
                     wgpuSupport().isSupported
@@ -186,30 +174,7 @@ export default function WGPUNotificationApp() {
                 </h3>
               </div>
 
-              {wgpuSupport().isSupported ? (
-                <div class="text-sm text-green-700">
-                  <p class="mb-2">
-                    Your browser supports WebGPU! The 3D experience will work
-                    correctly.
-                  </p>
-                  {adapterInfo() && (
-                    <div class="bg-white p-2 rounded border mt-2">
-                      <p class="font-semibold mb-1">GPU Information:</p>
-                      <p>
-                        <strong>Vendor:</strong> {adapterInfo()!.vendor}
-                      </p>
-                      <p>
-                        <strong>Device:</strong> {adapterInfo()!.device}
-                      </p>
-                      <p>
-                        <strong>Architecture:</strong>{" "}
-                        {adapterInfo()!.architecture}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div class="text-sm text-red-700">
+              <Show when={wgpuSupport().isSupported} fallback={<div class="text-sm text-red-700">
                   <p class="mb-2">
                     Your browser does not support WebGPU, which is required for
                     the 3D experience.
@@ -225,8 +190,25 @@ export default function WGPUNotificationApp() {
                     <li>Restart your browser</li>
                     <li>Ensure you have a compatible GPU and drivers</li>
                   </ul>
-                </div>
-              )}
+                </div>}><div class="text-sm text-green-700">
+                  <p class="mb-2">
+                    Your browser supports WebGPU! The 3D experience will work
+                    correctly.
+                  </p>
+                  <Show when={adapterInfo()}><div class="bg-white p-2 rounded border mt-2">
+                      <p class="font-semibold mb-1">GPU Information:</p>
+                      <p>
+                        <strong>Vendor:</strong> {adapterInfo()!.vendor}
+                      </p>
+                      <p>
+                        <strong>Device:</strong> {adapterInfo()!.device}
+                      </p>
+                      <p>
+                        <strong>Architecture:</strong>{" "}
+                        {adapterInfo()!.architecture}
+                      </p>
+                    </div></Show>
+                </div></Show>
             </div>
 
             <div class="p-4 bg-blue-50 border-2 border-blue-300 rounded">
@@ -250,8 +232,12 @@ export default function WGPUNotificationApp() {
                 block WebGPU access.
               </p>
             </div>
-          </div>
-        )}
+          </div>}><div class="flex items-center justify-center h-32">
+            <div class="text-center">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2" />
+              <p class="text-sm text-gray-600">Checking WebGPU support...</p>
+            </div>
+          </div></Show>
       </div>
 
       <div class="mt-4 pt-4 border-t border-gray-400">

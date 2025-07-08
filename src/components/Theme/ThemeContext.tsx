@@ -1,4 +1,5 @@
-import { createContext, createSignal, createEffect, useContext, JSX } from 'solid-js';
+import type { JSX } from 'solid-js';
+import { createContext, createSignal, createEffect, useContext } from 'solid-js';
 
 export type ThemeOption = 'daemon-os';
 

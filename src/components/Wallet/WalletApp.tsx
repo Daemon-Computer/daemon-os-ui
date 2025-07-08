@@ -1,7 +1,8 @@
 import { createSignal, Show, For, onMount } from 'solid-js';
-import { useWallet, NetworkType, TransactionHistoryItem } from './WalletContext';
+import type { NetworkType, TransactionHistoryItem } from './WalletContext';
+import { useWallet } from './WalletContext';
 import { truncateAddress } from './utils/format';
-import { LaunchProgramEvent } from '../../App';
+import type { LaunchProgramEvent } from '../../App';
 import { DAEMON_PACKAGE_ID } from '../../api/constants';
 
 function formatTimestamp(timestampMs: string | undefined): string {

@@ -1,5 +1,5 @@
 import { usePrograms } from '../ProgramWindow/programContext';
-import { createEffect, createSignal, onCleanup, onMount, untrack } from 'solid-js';
+import { createEffect, createSignal, onCleanup, onMount, untrack, For } from 'solid-js';
 import { WalletProvider } from '../Wallet/WalletContext';
 import WalletApp from '../Wallet/WalletApp';
 
@@ -93,9 +93,7 @@ export default function Taskbar() {
   };
 
   // Example "3/11/2025"
-  const formatDate = (date: Date) => {
-    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-  };
+  const formatDate = (date: Date) => `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 
   // Update the time every minute
   onMount(() => {
@@ -113,7 +111,7 @@ export default function Taskbar() {
       <div class='my-2 p-1 h-6 flex justify-between items-center'>
         {/* Programs section - left side */}
         <div class="flex gap-1 items-center overflow-x-auto">
-          {activePrograms.map((program) => (
+          <For each={activePrograms}>{(program) => (
             <button
               class={`
                 px-2 py-1 
@@ -133,7 +131,7 @@ export default function Taskbar() {
                 {program.label}
               </span>
             </button>
-          ))}
+          )}</For>
         </div>
 
         {/* System tray - right side */}

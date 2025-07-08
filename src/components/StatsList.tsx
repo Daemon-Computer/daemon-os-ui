@@ -1,18 +1,16 @@
-import { Component } from 'solid-js';
+import type { Component } from 'solid-js';
 
 interface StatRowProps {
     label: string;
     value: string | number;
 }
 
-const StatRow: Component<StatRowProps> = (props) => {
-    return (
+const StatRow: Component<StatRowProps> = (props) => (
         <li class="flex items-center justify-between status-bar-field mb-px px-1">
             <span class="whitespace-nowrap">{props.label}</span>
             <span class="whitespace-nowrap font-mono">{props.value}</span>
         </li>
     );
-};
 
 interface StatsListProps {
     program: {
@@ -24,8 +22,7 @@ interface StatsListProps {
     };
 }
 
-const StatsList: Component<StatsListProps> = (props) => {
-    return (
+const StatsList: Component<StatsListProps> = (props) => (
         <div class="w-full">
             <div class="font-bold mb-1">Stats</div>
             <ul class="list-none p-0 m-0">
@@ -48,6 +45,5 @@ const StatsList: Component<StatsListProps> = (props) => {
             </ul>
         </div>
     );
-};
 
 export default StatsList;

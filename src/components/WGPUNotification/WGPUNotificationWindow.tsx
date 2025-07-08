@@ -1,4 +1,5 @@
-import { createEffect, createSignal, JSXElement, onCleanup, onMount, Show } from 'solid-js';
+import type { JSXElement} from 'solid-js';
+import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js';
 import interact from 'interactjs';
 import { usePrograms, TASKBAR_HEIGHT_PX } from '../ProgramWindow/programContext';
 import X from '../Icons/X';
@@ -199,7 +200,7 @@ export default function WGPUNotificationWindow(props: WGPUNotificationWindowProp
           aria-label="Close"
           onClick={(e) => { e.stopPropagation(); handleClose(); }}
         >
-          <X className="text-white" />
+          <X class="text-white" />
         </button>
       </div>
 

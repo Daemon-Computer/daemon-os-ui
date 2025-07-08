@@ -1,7 +1,8 @@
 import { createSignal, createEffect, Show, onMount, onCleanup } from 'solid-js';
 import { useWallet } from './Wallet/WalletContext';
 import { Transaction } from '@mysten/sui/transactions';
-import { SuiClient, getFullnodeUrl, SuiTransactionBlockResponse, SuiTransactionBlockResponseOptions } from '@mysten/sui/client';
+import type { SuiTransactionBlockResponse, SuiTransactionBlockResponseOptions } from '@mysten/sui/client';
+import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
 import { MIST_PER_SUI } from '@mysten/sui/utils';
 import { WasmIframeWrapper } from './WasmIframeWrapper';
 import type { WasmCanvasBridgeInterface } from './hooks/createWasmCanvas';
@@ -119,10 +120,10 @@ export default function DrivesAndPrograms() {
         sendDefaultDriveModel();
     };
 
-    const getSuiClient = () => {
+    const getSuiClient = () => 
         // state.network is guaranteed to be a valid NetworkType ('mainnet' | 'testnet')
-        return new SuiClient({ url: getFullnodeUrl(state.network) });
-    };
+         new SuiClient({ url: getFullnodeUrl(state.network) })
+    ;
 
     const canBuyDrive = () => {
         // Check if wallet is connected
@@ -513,7 +514,7 @@ export default function DrivesAndPrograms() {
 
                         {/* Buy Button */}
                         <button
-                            onclick={buyEncryptedDrive}
+                            onClick={buyEncryptedDrive}
                             disabled={!canBuyDrive()}
                             class={`w-64 mb-4 ${!canBuyDrive() ? 'opacity-70 cursor-not-allowed bg-gray-300' : ''}`}
                         >
@@ -523,7 +524,7 @@ export default function DrivesAndPrograms() {
 
                         {/* Decrypt Button */}
                         <button
-                            onclick={mintProgram}
+                            onClick={mintProgram}
                             disabled={!canMintProgram()}
                             class={`w-64 mb-4 ${!canMintProgram() ? 'opacity-70 cursor-not-allowed bg-gray-300' : ''}`}
                         >

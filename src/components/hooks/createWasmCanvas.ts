@@ -1,5 +1,6 @@
 // src/hooks/createWasmCanvas.ts
-import { createSignal, onCleanup, createEffect, Accessor, createMemo } from 'solid-js';
+import type { Accessor} from 'solid-js';
+import { createSignal, onCleanup, createEffect, createMemo } from 'solid-js';
 import { GameBridge } from '../../api/game/gameBridge'; // Adjust path as needed
 import type { EventPayload } from '../../api/game/events'; // Adjust path as needed
 

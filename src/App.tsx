@@ -1,6 +1,7 @@
 import "./98.css";
+import type {
+  Component} from "solid-js";
 import {
-  Component,
   For,
   onMount,
   createSignal,
@@ -228,7 +229,7 @@ export default function App() {
       when={!isLoading()}
       fallback={<SplashScreen onLoaded={handleLoadingComplete} />}
     >
-      <div class={`fade-container ${fadeIn() ? "fade-in" : ""}`}></div>
+      <div class={`fade-container ${fadeIn() ? "fade-in" : ""}`} />
 
       <Show when={showOSUI()}>
         <div class="fixed inset-0 z-50">

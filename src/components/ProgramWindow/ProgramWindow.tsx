@@ -1,4 +1,5 @@
-import { createEffect, createSignal, JSXElement, onCleanup, onMount, Show } from 'solid-js';
+import type { JSXElement} from 'solid-js';
+import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js';
 import interact from 'interactjs';
 import { usePrograms, TASKBAR_HEIGHT_PX } from './programContext';
 import ArrowsPointingOut from '../Icons/ArrowsPointingOut';
@@ -399,7 +400,7 @@ export default function ProgramWindow(props: ProgramWindowProps) {
           onClick={(e) => { e.stopPropagation(); handleMinimize(); }}
           disabled={state?.isMinimized}
         >
-          <Minus className="text-[#4604ec]" />
+          <Minus class="text-[#4604ec]" />
         </button>
         <button
           class="min-w-0 flex items-center w-6 h-6 p-0 title-bar-controls"
@@ -407,16 +408,14 @@ export default function ProgramWindow(props: ProgramWindowProps) {
           onClick={(e) => { e.stopPropagation(); handleMaximize(); }}
           disabled={state?.isMinimized}
         >
-          {isMaximized() ?
-            <ArrowsPointingIn className="text-[#4604ec]" /> :
-            <ArrowsPointingOut className="text-[#4604ec]" />}
+          <Show when={isMaximized()} fallback={<ArrowsPointingOut class="text-[#4604ec]" />}><ArrowsPointingIn class="text-[#4604ec]" /></Show>
         </button>
         <button
           class="min-w-0 flex items-center w-6 h-6 p-0 title-bar-controls"
           aria-label="Close"
           onClick={(e) => { e.stopPropagation(); handleClose(); }}
         >
-          <X className="text-white" />
+          <X class="text-white" />
         </button>
       </div>
 

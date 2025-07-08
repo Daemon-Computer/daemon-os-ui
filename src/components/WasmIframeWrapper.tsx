@@ -1,4 +1,5 @@
-import { createSignal, onCleanup, onMount, Component, Show, createMemo } from 'solid-js';
+import type { Component} from 'solid-js';
+import { createSignal, onCleanup, onMount, Show, createMemo } from 'solid-js';
 import type { EventPayload } from '../api/game/events';
 import type { WasmCanvasBridgeInterface } from './hooks/createWasmCanvas';
 
@@ -98,8 +99,7 @@ export const WasmIframeWrapper: Component<WasmIframeWrapperProps> = (props) => {
     });
 
     // --- Bridge Interface Implementation ---
-    const createBridgeInterface = (): WasmCanvasBridgeInterface => {
-        return {
+    const createBridgeInterface = (): WasmCanvasBridgeInterface => ({
             queueEventForWasm: (event: EventPayload) => {
                 sendMessageToIframe({ type: 'QUEUE_WASM_EVENT', payload: event });
             },
@@ -118,8 +118,7 @@ export const WasmIframeWrapper: Component<WasmIframeWrapperProps> = (props) => {
             },
             isReady: isIframeReady,
             error: error,
-        };
-    };
+        });
 
     const showLoading = () => !isIframeReady() && !error();
 
@@ -148,7 +147,7 @@ export const WasmIframeWrapper: Component<WasmIframeWrapperProps> = (props) => {
                 style={{ border: 'none', display: 'block', width: '100%', height: '100%' }}
                 sandbox="allow-scripts allow-same-origin"
                 title={`WASM Instance ${props.instanceId}`}
-            ></iframe>
+             />
         </div>
     );
 };

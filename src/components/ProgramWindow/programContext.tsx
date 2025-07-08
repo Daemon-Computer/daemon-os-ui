@@ -1,4 +1,5 @@
-import { createContext, JSXElement, useContext, Component } from "solid-js";
+import type { JSXElement, Component } from "solid-js";
+import { createContext, useContext } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 
 const programContextModuleId = Math.random().toString(36).substring(7);
@@ -42,9 +43,7 @@ export function ProgramProvider(props: { children: JSXElement; }) {
     // console.log(`ProgramProvider rendering (ID: ${programContextModuleId}), providing context:`, ProgramContext);
 
 
-    const isRunning = (label: string) => {
-        return programs.some(p => p.label === label);
-    };
+    const isRunning = (label: string) => programs.some(p => p.label === label);
 
     const normalizeZIndices = (currentPrograms: RunningProgram[]) => {
         const nonMinimized = currentPrograms

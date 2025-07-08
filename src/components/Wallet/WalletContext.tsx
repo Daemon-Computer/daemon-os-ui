@@ -1,7 +1,8 @@
+import type {
+    JSXElement} from "solid-js";
 import {
     createContext,
     useContext,
-    JSXElement,
     createSignal,
     createEffect,
     onMount
@@ -201,7 +202,7 @@ export function WalletProvider(props: { children: JSXElement; }) {
             s.balances = []; s.collections = { encryptedDrives: 0, decryptedPrograms: 0 };
         }));
         try {
-            let walletToConnect = walletName
+            const walletToConnect = walletName
                 ? state.availableWallets.find(w => w.name === walletName)
                 : state.availableWallets[0];
             if (!walletToConnect) throw new Error("No compatible wallet found.");

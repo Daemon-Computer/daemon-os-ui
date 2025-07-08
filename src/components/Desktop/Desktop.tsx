@@ -1,4 +1,4 @@
-import { JSXElement } from 'solid-js';
+import type { JSXElement } from 'solid-js';
 import Taskbar from '../Desktop/Taskbar';
 import { usePrograms } from '../ProgramWindow/programContext';
 
