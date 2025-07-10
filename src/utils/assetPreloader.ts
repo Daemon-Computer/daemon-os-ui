@@ -69,14 +69,14 @@ async function validateAsset(asset: AssetDefinition, cache: Cache): Promise<{ st
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-  } catch (error) {
+  } catch (networkError) {
     // Network error - try to use cached version as fallback
     const cachedResponse = await cache.match(asset.url);
     if (cachedResponse) {
       return { status: 'error-cached', cached: true };
     }
     // No cached version available, re-throw error
-    throw error;
+    throw networkError;
   }
 }
 
