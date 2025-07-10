@@ -430,19 +430,19 @@ export function createWasmCanvas(options: CreateWasmCanvasOptions): [
   // It checks if conditions are right to start the initialization process.
   createEffect(() => {
     const canvas = canvasElement(); // Depend on canvas element signal
-    const shouldrunInit = enabled(); // Depend on enabled prop accessor
+    const shouldRunInit = enabled(); // Depend on enabled prop accessor
     const currentBridge = bridge(); // Depend on bridge signal
     const currentError = error(); // Depend on error signal
-    const iswasmReady = isReady(); // Depend on ready signal
+    const isWasmReady = isReady(); // Depend on ready signal
 
     // Conditions: canvas exists, hook is enabled, not already ready, no error, bridge not yet created
-    const needsinitialization =
-      canvas && shouldrunInit && !iswasmReady && !currentError && !currentBridge;
+    const needsInitialization =
+      canvas && shouldRunInit && !isWasmReady && !currentError && !currentBridge;
 
     // Optional: Log the check status for debugging
     // console.log(`[${uniqueId}] Init Effect Check: needsInit=${needsInit} (canvas=${!!canvas}, enabled=${shouldRun}, isReady=${currentReady}, error=${!!currentError}, bridge=${!!currentBridge})`);
 
-    if (needsinitialization) {
+    if (needsInitialization) {
       console.log('[' + uniqueId + '] Initialization conditions met.');
       // Create a new GameBridge instance for this WASM canvas
       const newBridge = new GameBridge();

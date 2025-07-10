@@ -1,5 +1,3 @@
-import type { Component } from 'solid-js';
-
 interface StatRowProps {
   label: string;
   value: string | number;
@@ -24,16 +22,16 @@ interface StatsListProps {
   };
 }
 
-const statsList: Component<StatsListProps> = (props) => (
-  <div class="w-full">
-    <div class="font-bold mb-1">Stats</div>
-    <ul class="list-none p-0 m-0">
-      <StatRow label="Speed" value={`${props.program.speed} tiles`} />
-      <StatRow label="Corruption" value={`${props.program.corruption}%`} />
-      <StatRow label="Health" value={`${props.program.health}/${props.program.maxHealth}`} />
-      <StatRow label="Damage" value={`${props.program.damage}`} />
-    </ul>
-  </div>
-);
-
-export default statsList;
+export default function StatsList(props: StatsListProps) {
+  return (
+    <div class="w-full">
+      <div class="font-bold mb-1">Stats</div>
+      <ul class="list-none p-0 m-0">
+        <StatRow label="Speed" value={`${props.program.speed} tiles`} />
+        <StatRow label="Corruption" value={`${props.program.corruption}%`} />
+        <StatRow label="Health" value={`${props.program.health}/${props.program.maxHealth}`} />
+        <StatRow label="Damage" value={`${props.program.damage}`} />
+      </ul>
+    </div>
+  );
+}
