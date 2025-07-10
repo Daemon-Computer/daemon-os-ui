@@ -101,7 +101,12 @@ export default function ProgramWindow(props: ProgramWindowProps) {
   createEffect(() => {
     const _state = programState();
     const _pos = position();
-    const _maximized = isMaximized();
+    const isCurrentlyMaximized = isMaximized();
+
+    void _state; // Preserved for future use
+    void _pos; // Preserved for future use
+    void isCurrentlyMaximized; // Preserved for future use
+
     applyStateToDOM();
   });
 
@@ -290,6 +295,7 @@ export default function ProgramWindow(props: ProgramWindowProps) {
         start(event) {
           bringToFront(props.programId);
           const _currentPos = syncPositionFromDOM(); // Sync local signal just before drag
+          void _currentPos; // Preserved for future use
 
           if (isMaximized()) {
             handleMaximize();
@@ -340,7 +346,7 @@ export default function ProgramWindow(props: ProgramWindowProps) {
           setPosition({ x: newX, y: newY });
           event.target.style.transform = `translate(${newX}px, ${newY}px)`;
         },
-        end(_event) {
+        end() {
           if (!isDragging()) return;
 
           const finalPos = syncPositionFromDOM();
@@ -370,9 +376,6 @@ export default function ProgramWindow(props: ProgramWindowProps) {
     cleanupInteract();
     window.removeEventListener('resize', handleBrowserResize);
   });
-
-  // --- Render ---
-  const state = programState();
 
   return (
     <div
@@ -408,7 +411,7 @@ export default function ProgramWindow(props: ProgramWindowProps) {
             e.stopPropagation();
             handleMinimize();
           }}
-          disabled={state?.isMinimized}
+          disabled={programState()?.isMinimized}
         >
           <Minus class="text-[#4604ec]" />
         </button>
@@ -419,7 +422,7 @@ export default function ProgramWindow(props: ProgramWindowProps) {
             e.stopPropagation();
             handleMaximize();
           }}
-          disabled={state?.isMinimized}
+          disabled={programState()?.isMinimized}
         >
           <Show when={isMaximized()} fallback={<ArrowsPointingOut class="text-[#4604ec]" />}>
             <ArrowsPointingIn class="text-[#4604ec]" />
