@@ -130,38 +130,38 @@ export default function ProgramEventDemo() {
     }
   };
 
-  const _handleShowNormals = () => {
-    const b = bridge();
-    if (b?.isReady()) {
-      const event: EventPayload = { DebugRayMarch: 'Normals' };
-      console.log('Sending event to demo WASM:', event);
-      b.queueEventForWasm(event);
-    } else {
-      console.warn("Demo WASM bridge not ready to send 'Normals' event.");
-    }
-  };
+  // const _handleShowNormals = () => {
+  //   const b = bridge();
+  //   if (b?.isReady()) {
+  //     const event: EventPayload = { DebugRayMarch: 'Normals' };
+  //     console.log('Sending event to demo WASM:', event);
+  //     b.queueEventForWasm(event);
+  //   } else {
+  //     console.warn("Demo WASM bridge not ready to send 'Normals' event.");
+  //   }
+  // };
 
-  const _handleShowDefault = () => {
-    const b = bridge();
-    if (b?.isReady()) {
-      const event: EventPayload = { DebugRayMarch: 'Disabled' };
-      console.log('Sending event to demo WASM:', event);
-      b.queueEventForWasm(event);
-    } else {
-      console.warn("Demo WASM bridge not ready to send 'Disabled' event.");
-    }
-  };
+  // const _handleShowDefault = () => {
+  //   const b = bridge();
+  //   if (b?.isReady()) {
+  //     const event: EventPayload = { DebugRayMarch: 'Disabled' };
+  //     console.log('Sending event to demo WASM:', event);
+  //     b.queueEventForWasm(event);
+  //   } else {
+  //     console.warn("Demo WASM bridge not ready to send 'Disabled' event.");
+  //   }
+  // };
 
-  const _handleShowSteps = () => {
-    const b = bridge();
-    if (b?.isReady()) {
-      const event: EventPayload = { DebugRayMarch: 'Steps' };
-      console.log('Sending event to demo WASM:', event);
-      b.queueEventForWasm(event);
-    } else {
-      console.warn("Demo WASM bridge not ready to send 'Steps' event.");
-    }
-  };
+  // const _handleShowSteps = () => {
+  //   const b = bridge();
+  //   if (b?.isReady()) {
+  //     const event: EventPayload = { DebugRayMarch: 'Steps' };
+  //     console.log('Sending event to demo WASM:', event);
+  //     b.queueEventForWasm(event);
+  //   } else {
+  //     console.warn("Demo WASM bridge not ready to send 'Steps' event.");
+  //   }
+  // };
 
   return (
     <div class="flex-col h-[90%]">

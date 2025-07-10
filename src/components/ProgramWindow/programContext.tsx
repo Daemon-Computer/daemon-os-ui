@@ -3,6 +3,7 @@ import { createContext, useContext } from 'solid-js';
 import { createStore, produce } from 'solid-js/store';
 
 const _programContextModuleId = Math.random().toString(36).substring(7);
+void _programContextModuleId; // Preserved for future use
 // console.log(`programContext.tsx module evaluating (ID: ${programContextModuleId})`); // Keep for debugging if needed
 
 export const TASKBAR_HEIGHT_PX = 46;

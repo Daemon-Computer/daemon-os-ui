@@ -250,7 +250,7 @@ export default function App() {
                             onClose={() => handleCloseProgram(program.id)}
                           >
                             <WalletProvider>
-                              <programComponent />
+                              {programComponent({})}
                             </WalletProvider>
                           </WGPUNotificationWindow>
                         );
@@ -263,7 +263,7 @@ export default function App() {
                           onClose={() => handleCloseProgram(program.id)}
                         >
                           <WalletProvider>
-                            <programComponent />
+                            {programComponent({})}
                           </WalletProvider>
                         </ProgramWindow>
                       );
