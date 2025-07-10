@@ -1,12 +1,12 @@
 .fade-container {
-    opacity: 0;
-    transition: opacity 1000ms ease-in;
-    position: fixed;
-    inset: 0;
-    background: #0d9488;
-    z-index: 45;
+  opacity: 0;
+  transition: opacity 1000ms ease-in;
+  position: fixed;
+  inset: 0;
+  background: #0d9488;
+  z-index: 45;
 }
 
 .fade-in {
-    opacity: 1;
+  opacity: 1;
 }

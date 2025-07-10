@@ -4,8 +4,7 @@
 
 1. Open `ThemeContext.tsx` and add your theme name to the `ThemeOption` type
 2. Open `theme.css` and add your theme definition section
-3. Add your theme to the theme selector in `ThemeSwitcher.tsx`
-4. Test your theme in the application
+3. Test your theme in the application
 
 ## Detailed Instructions
 
@@ -64,9 +63,11 @@ For a complete theme, you may want to add specific styles for buttons, inputs, s
 [data-theme='yourThemeName'] input[type='reset'],
 [data-theme='yourThemeName'] input[type='submit'] {
   background: #your-button-bg;
-  box-shadow: inset -1px -1px #your-shadow-dark, inset 1px 1px
-      #your-shadow-light, inset -2px -2px #your-shadow-mid-dark, inset 2px 2px
-      #your-shadow-mid-light;
+  box-shadow:
+    inset -1px -1px #your-shadow-dark,
+    inset 1px 1px #your-shadow-light,
+    inset -2px -2px #your-shadow-mid-dark,
+    inset 2px 2px #your-shadow-mid-light;
   color: #your-button-text;
 }
 
@@ -77,9 +78,11 @@ For a complete theme, you may want to add specific styles for buttons, inputs, s
 
 /* Button active state */
 [data-theme='yourThemeName'] button:not(:disabled):active {
-  box-shadow: inset -1px -1px #your-shadow-light, inset 1px 1px
-      #your-shadow-dark, inset -2px -2px #your-shadow-mid-light, inset 2px 2px
-      #your-shadow-mid-dark;
+  box-shadow:
+    inset -1px -1px #your-shadow-light,
+    inset 1px 1px #your-shadow-dark,
+    inset -2px -2px #your-shadow-mid-light,
+    inset 2px 2px #your-shadow-mid-dark;
 }
 
 /* Disabled button state */
@@ -94,17 +97,21 @@ For a complete theme, you may want to add specific styles for buttons, inputs, s
 [data-theme='yourThemeName'] textarea {
   background-color: #your-input-bg;
   color: #your-input-text;
-  box-shadow: inset -1px -1px #your-input-shadow-light, inset 1px 1px
-      #your-input-shadow-dark, inset -2px -2px #your-input-shadow-mid-light, inset
-      2px 2px #your-input-shadow-mid-dark;
+  box-shadow:
+    inset -1px -1px #your-input-shadow-light,
+    inset 1px 1px #your-input-shadow-dark,
+    inset -2px -2px #your-input-shadow-mid-light,
+    inset 2px 2px #your-input-shadow-mid-dark;
 }
 
 /* Scrollbar thumb */
 [data-theme='yourThemeName'] ::-webkit-scrollbar-thumb {
   background-color: #your-scrollbar-thumb;
-  box-shadow: inset -1px -1px #your-shadow-dark, inset 1px 1px
-      #your-shadow-light, inset -2px -2px #your-shadow-mid-dark, inset 2px 2px
-      #your-shadow-mid-light;
+  box-shadow:
+    inset -1px -1px #your-shadow-dark,
+    inset 1px 1px #your-shadow-light,
+    inset -2px -2px #your-shadow-mid-dark,
+    inset 2px 2px #your-shadow-mid-light;
 }
 
 /* Scrollbar track */
@@ -112,21 +119,6 @@ For a complete theme, you may want to add specific styles for buttons, inputs, s
   background-color: #your-scrollbar-track;
   /* You may want to add a custom pattern here */
 }
-```
-
-### Step 4: Add Your Theme to the Theme Switcher
-
-Edit `ThemeSwitcher.tsx` and add your theme to the themes array:
-
-```typescript
-const themes: { id: ThemeOption; name: string; description: string }[] = [
-  // Existing themes...
-  {
-    id: 'yourThemeName',
-    name: 'Your Theme',
-    description: 'Description of your theme',
-  },
-];
 ```
 
 ## Theme Color Tips
@@ -174,8 +166,11 @@ Here's a complete template with example values to get you started:
 [data-theme='sunsetOrange'] input[type='reset'],
 [data-theme='sunsetOrange'] input[type='submit'] {
   background: #ffe8cc;
-  box-shadow: inset -1px -1px #994c00, inset 1px 1px #ffffff,
-    inset -2px -2px #ff7b00, inset 2px 2px #fff5e6;
+  box-shadow:
+    inset -1px -1px #994c00,
+    inset 1px 1px #ffffff,
+    inset -2px -2px #ff7b00,
+    inset 2px 2px #fff5e6;
   color: #663300;
 }
 
@@ -184,8 +179,11 @@ Here's a complete template with example values to get you started:
 }
 
 [data-theme='sunsetOrange'] button:not(:disabled):active {
-  box-shadow: inset -1px -1px #fff5e6, inset 1px 1px #994c00,
-    inset -2px -2px #ffffff, inset 2px 2px #ff7b00;
+  box-shadow:
+    inset -1px -1px #fff5e6,
+    inset 1px 1px #994c00,
+    inset -2px -2px #ffffff,
+    inset 2px 2px #ff7b00;
 }
 
 /* Text inputs */
@@ -194,8 +192,11 @@ Here's a complete template with example values to get you started:
 [data-theme='sunsetOrange'] textarea {
   background-color: #fff5e6;
   color: #663300;
-  box-shadow: inset -1px -1px #fff5e6, inset 1px 1px #994c00,
-    inset -2px -2px #ffffff, inset 2px 2px #ff7b00;
+  box-shadow:
+    inset -1px -1px #fff5e6,
+    inset 1px 1px #994c00,
+    inset -2px -2px #ffffff,
+    inset 2px 2px #ff7b00;
 }
 ```
 

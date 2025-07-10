@@ -1,4 +1,4 @@
-import { JSXElement } from 'solid-js';
+import type { JSXElement } from 'solid-js';
 
 interface DesktopGridProps {
   children: JSXElement;

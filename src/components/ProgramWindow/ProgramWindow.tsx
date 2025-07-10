@@ -1,4 +1,5 @@
-import { createEffect, createSignal, JSXElement, onCleanup, onMount, Show } from 'solid-js';
+import type { JSXElement } from 'solid-js';
+import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js';
 import interact from 'interactjs';
 import { usePrograms, TASKBAR_HEIGHT_PX } from './programContext';
 import ArrowsPointingOut from '../Icons/ArrowsPointingOut';
@@ -7,10 +8,10 @@ import X from '../Icons/X';
 import Minus from '../Icons/Minus';
 
 interface ProgramWindowProps {
-  label: string;            // window title
+  label: string; // window title
   programId: string;
-  children: JSXElement;     // the content within the program window
-  onClose?: () => void;     // optional custom close handler
+  children: JSXElement; // the content within the program window
+  onClose?: () => void; // optional custom close handler
 }
 
 export default function ProgramWindow(props: ProgramWindowProps) {
@@ -23,7 +24,7 @@ export default function ProgramWindow(props: ProgramWindowProps) {
     updateProgramPosition,
   } = usePrograms();
 
-  const getProgramState = () => activePrograms.find(p => p.id === props.programId);
+  const getProgramState = () => activePrograms.find((p) => p.id === props.programId);
   const programState = () => getProgramState();
 
   // --- State Management ---
@@ -52,18 +53,22 @@ export default function ProgramWindow(props: ProgramWindowProps) {
       setPosition({ x: state.x, y: state.y });
 
       // Update previous state if it's the first load or position has changed externally
-      if (previousState().width === 0 || previousState().x !== state.x || previousState().y !== state.y) {
+      if (
+        previousState().width === 0 ||
+        previousState().x !== state.x ||
+        previousState().y !== state.y
+      ) {
         setPreviousState({
           width: state.width,
           height: state.height,
           x: state.x,
-          y: state.y
+          y: state.y,
         });
       }
     }
 
     if (state && previousState().width === 0) {
-      setPreviousState(prev => ({ ...prev, width: state.width, height: state.height }));
+      setPreviousState((prev) => ({ ...prev, width: state.width, height: state.height }));
     }
   });
 
@@ -71,7 +76,7 @@ export default function ProgramWindow(props: ProgramWindowProps) {
   function setWindowRef(el: HTMLDivElement) {
     windowRef = el;
     applyStateToDOM();
-  };
+  }
 
   function applyStateToDOM() {
     if (!windowRef) return;
@@ -94,9 +99,14 @@ export default function ProgramWindow(props: ProgramWindowProps) {
   }
 
   createEffect(() => {
-    const state = programState();
-    const pos = position();
-    const maximized = isMaximized();
+    const _state = programState();
+    const _pos = position();
+    const isCurrentlyMaximized = isMaximized();
+
+    void _state; // Preserved for future use
+    void _pos; // Preserved for future use
+    void isCurrentlyMaximized; // Preserved for future use
+
     applyStateToDOM();
   });
 
@@ -136,12 +146,10 @@ export default function ProgramWindow(props: ProgramWindowProps) {
       y: currentPos.y,
     });
 
-
     // Animate towards taskbar button location stored in context
     windowRef.style.transition = 'transform 0.3s ease-in-out, opacity 0.3s ease-in-out';
     windowRef.style.transform = `translate(${state.minimizeTargetX}px, ${state.minimizeTargetY}px) scale(0.1)`;
     windowRef.style.opacity = '0';
-
 
     setTimeout(() => {
       minimizeProgram(props.programId!);
@@ -212,7 +220,6 @@ export default function ProgramWindow(props: ProgramWindowProps) {
     // Force browser reflow to apply visibility change before transition
     void windowRef.offsetWidth;
 
-
     windowRef.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
     windowRef.style.transform = `translate(${targetX}px, ${targetY}px) scale(1)`;
     windowRef.style.opacity = '1';
@@ -265,10 +272,8 @@ export default function ProgramWindow(props: ProgramWindowProps) {
     if (!windowRef) return;
     if (interactable) interactable.unset();
 
-
     const windowId = `window-${props.programId}`;
     windowRef.dataset.windowId = windowId;
-
 
     const restrictionRect = {
       left: 0,
@@ -277,76 +282,81 @@ export default function ProgramWindow(props: ProgramWindowProps) {
       bottom: window.innerHeight - TASKBAR_HEIGHT_PX,
     };
 
-    interactable = interact(windowRef)
-      .draggable({
-        allowFrom: '.title-bar', // Only allow dragging from title bar
-        inertia: false,
-        modifiers: [
-          interact.modifiers.restrictRect({
-            restriction: restrictionRect,
-            endOnly: false,
-          })
-        ],
-        listeners: {
-          start(event) {
-            bringToFront(props.programId);
-            const currentPos = syncPositionFromDOM(); // Sync local signal just before drag
+    interactable = interact(windowRef).draggable({
+      allowFrom: '.title-bar', // Only allow dragging from title bar
+      inertia: false,
+      modifiers: [
+        interact.modifiers.restrictRect({
+          restriction: restrictionRect,
+          endOnly: false,
+        }),
+      ],
+      listeners: {
+        start(event) {
+          bringToFront(props.programId);
+          const _currentPos = syncPositionFromDOM(); // Sync local signal just before drag
+          void _currentPos; // Preserved for future use
 
-            if (isMaximized()) {
-              handleMaximize();
+          if (isMaximized()) {
+            handleMaximize();
 
-              // --- Adjust position to follow cursor ---
-              const restoredWidth = previousState().width;
-              const restoredHeight = previousState().height;
-              const titleBar = windowRef?.querySelector('.title-bar');
-              const titleBarRect = titleBar?.getBoundingClientRect();
+            // --- Adjust position to follow cursor ---
+            const restoredWidth = previousState().width;
+            const restoredHeight = previousState().height;
+            const titleBar = windowRef?.querySelector('.title-bar');
+            const titleBarRect = titleBar?.getBoundingClientRect();
 
-              if (titleBarRect && restoredWidth > 0 && restoredHeight > 0) {
-                const clickOffsetX = Math.min(event.clientX - titleBarRect.left, restoredWidth - 20); // Avoid grabbing far right
-                const clickOffsetY = event.clientY - titleBarRect.top;
+            if (titleBarRect && restoredWidth > 0 && restoredHeight > 0) {
+              const clickOffsetX = Math.min(event.clientX - titleBarRect.left, restoredWidth - 20); // Avoid grabbing far right
+              const clickOffsetY = event.clientY - titleBarRect.top;
 
-                let newX = event.clientX - clickOffsetX;
-                let newY = event.clientY - clickOffsetY;
+              let newX = event.clientX - clickOffsetX;
+              let newY = event.clientY - clickOffsetY;
 
-                // Clamp position to new boundaries
-                newX = Math.max(restrictionRect.left, Math.min(newX, restrictionRect.right - restoredWidth));
-                newY = Math.max(restrictionRect.top, Math.min(newY, restrictionRect.bottom - restoredHeight));
+              // Clamp position to new boundaries
+              newX = Math.max(
+                restrictionRect.left,
+                Math.min(newX, restrictionRect.right - restoredWidth),
+              );
+              newY = Math.max(
+                restrictionRect.top,
+                Math.min(newY, restrictionRect.bottom - restoredHeight),
+              );
 
-                setPosition({ x: newX, y: newY });
-                if (windowRef) {
-                  windowRef.style.transform = `translate(${newX}px, ${newY}px)`;
-                }
-
-                setPreviousState(prev => ({ ...prev, x: newX, y: newY }));
+              setPosition({ x: newX, y: newY });
+              if (windowRef) {
+                windowRef.style.transform = `translate(${newX}px, ${newY}px)`;
               }
+
+              setPreviousState((prev) => ({ ...prev, x: newX, y: newY }));
             }
-
-            setIsDragging(true);
-            if (windowRef) windowRef.style.userSelect = 'none';
-          },
-          move(event) {
-            if (!isDragging()) return;
-
-            // Position is updated directly by interact.js modifier + transform style
-            const currentPos = position();
-            const newX = currentPos.x + event.dx;
-            const newY = currentPos.y + event.dy;
-
-            setPosition({ x: newX, y: newY });
-            event.target.style.transform = `translate(${newX}px, ${newY}px)`;
-
-          },
-          end(event) {
-            if (!isDragging()) return;
-
-            const finalPos = syncPositionFromDOM();
-            updateProgramPosition(props.programId, finalPos.x, finalPos.y);
-
-            setTimeout(() => setIsDragging(false), 0);
-            if (windowRef) windowRef.style.userSelect = '';
           }
-        }
-      });
+
+          setIsDragging(true);
+          if (windowRef) windowRef.style.userSelect = 'none';
+        },
+        move(event) {
+          if (!isDragging()) return;
+
+          // Position is updated directly by interact.js modifier + transform style
+          const currentPos = position();
+          const newX = currentPos.x + event.dx;
+          const newY = currentPos.y + event.dy;
+
+          setPosition({ x: newX, y: newY });
+          event.target.style.transform = `translate(${newX}px, ${newY}px)`;
+        },
+        end() {
+          if (!isDragging()) return;
+
+          const finalPos = syncPositionFromDOM();
+          updateProgramPosition(props.programId, finalPos.x, finalPos.y);
+
+          setTimeout(() => setIsDragging(false), 0);
+          if (windowRef) windowRef.style.userSelect = '';
+        },
+      },
+    });
   }
 
   function cleanupInteract() {
@@ -367,9 +377,6 @@ export default function ProgramWindow(props: ProgramWindowProps) {
     window.removeEventListener('resize', handleBrowserResize);
   });
 
-  // --- Render ---
-  const state = programState();
-
   return (
     <div
       ref={setWindowRef}
@@ -388,47 +395,61 @@ export default function ProgramWindow(props: ProgramWindowProps) {
           bringToFront(props.programId);
         }
       }}
-      onMouseDown={(e) => { if (isDragging()) e.stopPropagation(); }}
+      onMouseDown={(e) => {
+        if (isDragging()) e.stopPropagation();
+      }}
     >
       {/* Window Controls */}
-      <div class="window-controls absolute top-2 right-2 z-10 flex"
-        onClick={(e) => e.stopPropagation()}>
+      <div
+        class="window-controls absolute top-2 right-2 z-10 flex"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
           class="min-w-0 flex items-center w-6 h-6 p-0 title-bar-controls"
           aria-label="Minimize"
-          onClick={(e) => { e.stopPropagation(); handleMinimize(); }}
-          disabled={state?.isMinimized}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleMinimize();
+          }}
+          disabled={programState()?.isMinimized}
         >
-          <Minus className="text-[#4604ec]" />
+          <Minus class="text-[#4604ec]" />
         </button>
         <button
           class="min-w-0 flex items-center w-6 h-6 p-0 title-bar-controls"
-          aria-label={isMaximized() ? "Restore" : "Maximize"}
-          onClick={(e) => { e.stopPropagation(); handleMaximize(); }}
-          disabled={state?.isMinimized}
+          aria-label={isMaximized() ? 'Restore' : 'Maximize'}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleMaximize();
+          }}
+          disabled={programState()?.isMinimized}
         >
-          {isMaximized() ?
-            <ArrowsPointingIn className="text-[#4604ec]" /> :
-            <ArrowsPointingOut className="text-[#4604ec]" />}
+          <Show when={isMaximized()} fallback={<ArrowsPointingOut class="text-[#4604ec]" />}>
+            <ArrowsPointingIn class="text-[#4604ec]" />
+          </Show>
         </button>
         <button
           class="min-w-0 flex items-center w-6 h-6 p-0 title-bar-controls"
           aria-label="Close"
-          onClick={(e) => { e.stopPropagation(); handleClose(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClose();
+          }}
         >
-          <X className="text-white" />
+          <X class="text-white" />
         </button>
       </div>
 
       {/* Title Bar - Now without the control buttons */}
-      <div class="title-bar cursor-grab"
-        onMouseDown={(e) => { if (isDragging()) e.stopPropagation(); }}
+      <div
+        class="title-bar cursor-grab"
+        onMouseDown={(e) => {
+          if (isDragging()) e.stopPropagation();
+        }}
       >
         <div class="title-bar-text select-none">{props.label}</div>
       </div>
-      <div class="window-body flex-1 p-0 m-0 overflow-hidden">
-        {props.children}
-      </div>
+      <div class="window-body flex-1 p-0 m-0 overflow-hidden">{props.children}</div>
     </div>
   );
 }
