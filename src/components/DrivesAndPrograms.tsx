@@ -101,6 +101,8 @@ export default function DrivesAndPrograms() {
     if (bridge?.isReady()) {
       // Use Drive: null which was triggering the model loading
       console.log('Sending Drive: null event to trigger model loading');
+
+      // @ts-ignore
       bridge.queueEventForWasm({ Drive: null });
     }
   };

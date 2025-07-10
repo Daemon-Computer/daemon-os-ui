@@ -25,6 +25,8 @@ export default function ProgramEventDemo() {
   const [bridge, setBridge] = createSignal<WasmCanvasBridgeInterface | null>(null);
   const [webGPUSupported, setWebGPUSupported] = createSignal(true); // Assume true
 
+  void bridge; // Preserve for future use
+
   onMount(() => {
     if (typeof navigator !== 'undefined' && !('gpu' in navigator)) {
       setWebGPUSupported(false);
