@@ -1,5 +1,5 @@
 import type { JSXElement } from 'solid-js';
-import { createEffect, createSignal, onCleanup, onMount, Show as _Show } from 'solid-js';
+import { createEffect, createSignal, onCleanup, onMount } from 'solid-js';
 import interact from 'interactjs';
 import { usePrograms, TASKBAR_HEIGHT_PX } from '../ProgramWindow/programContext';
 import X from '../Icons/X';
@@ -58,6 +58,10 @@ export default function WGPUNotificationWindow(props: WGPUNotificationWindowProp
   createEffect(() => {
     const _state = programState();
     const _pos = position();
+
+    void _state; // Preserved for future use
+    void _pos; // Preserved for future use
+
     applyStateToDOM();
   });
 
@@ -120,7 +124,7 @@ export default function WGPUNotificationWindow(props: WGPUNotificationWindowProp
         }),
       ],
       listeners: {
-        start(_event) {
+        start() {
           bringToFront(props.programId);
           syncPositionFromDOM(); // Sync local signal just before drag
           setIsDragging(true);
@@ -137,7 +141,7 @@ export default function WGPUNotificationWindow(props: WGPUNotificationWindowProp
           setPosition({ x: newX, y: newY });
           event.target.style.transform = `translate(${newX}px, ${newY}px)`;
         },
-        end(_event) {
+        end() {
           if (!isDragging()) return;
 
           const finalPos = syncPositionFromDOM();
@@ -167,9 +171,6 @@ export default function WGPUNotificationWindow(props: WGPUNotificationWindowProp
     cleanupInteract();
     window.removeEventListener('resize', handleBrowserResize);
   });
-
-  // --- Render ---
-  const _state = programState();
 
   return (
     <div
