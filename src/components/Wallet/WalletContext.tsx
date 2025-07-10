@@ -10,7 +10,7 @@ import type {
   PaginationArguments,
   OrderArguments,
 } from '@mysten/sui/client';
-import { DAEMON_PACKAGE_ID } from '../../api/constants';
+import { DAEMON_PACKAGE_ID } from '~/api/constants';
 
 // Define window property for TypeScript
 declare global {
@@ -287,12 +287,21 @@ export function WalletProvider(props: { children: JSXElement }) {
           eventsFeature.on('change', ({ accounts }: { accounts?: readonly WalletAccount[] }) => {
             if (accounts?.length) {
               console.log('Wallet account changed via event.');
-              setState('activeAccount', accounts[0]);
-              refreshBalances();
-              fetchTransactionHistory({ force: true });
+              // Using setTimeout to execute outside of reactive scope
+              setTimeout(() => {
+                setState(
+                  produce((s) => {
+                    s.activeAccount = accounts[0];
+                  }),
+                );
+                refreshBalances();
+                fetchTransactionHistory({ force: true });
+              }, 0);
             } else {
               console.log('Wallet accounts empty via event.');
-              disconnect();
+              setTimeout(() => {
+                disconnect();
+              }, 0);
             }
           });
         }
