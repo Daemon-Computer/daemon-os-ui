@@ -35,7 +35,7 @@ declare global {
     // Registry for script injection promises
     _wasmInitPromises?: Record<
       string,
-      { resolve: (value: any) => void; reject: (reason?: any) => void }
+      { resolve: (value: unknown) => void; reject: (reason?: unknown) => void }
     >;
     // Registry for instance-specific bridge functions (needed for init's wasmImports)
     _wasmBridgeFuncs?: Record<
@@ -104,7 +104,7 @@ setupGlobalEventDelegates();
 // --- End Global State Management ---
 
 // --- Script Injection Helper ---
-function loadWasmViaScript(jsPath: string, wasmPath: string, instanceId: string): Promise<any> {
+function loadWasmViaScript(jsPath: string, wasmPath: string, instanceId: string): Promise<unknown> {
   // This function injects a script to load and initialize the WASM module.
   // It uses global registries (_wasmInitPromises, _wasmBridgeFuncs) for communication.
   return new Promise((resolve, reject) => {
@@ -235,7 +235,7 @@ export function createWasmCanvas(options: CreateWasmCanvasOptions): [
   const [isReady, setIsReady] = createSignal(false);
   const [canvasElement, setCanvasElement] = createSignal<HTMLCanvasElement | null>(null);
   const [bridge, setBridge] = createSignal<GameBridge | null>(null);
-  const [wasmModule, setWasmModule] = createSignal<any>(null); // Stores resolved value from init (can be null)
+  const [wasmModule, setWasmModule] = createSignal<unknown>(null); // Stores resolved value from init (can be null)
   const uniqueId = providedInstanceId || generateUniqueId();
   const internalCanvasId = 'canvas-' + uniqueId; // Stable internal ID
 
@@ -260,7 +260,10 @@ export function createWasmCanvas(options: CreateWasmCanvasOptions): [
 
   // --- Visibility Handling ---
   // Sets up IntersectionObserver and Page Visibility listeners
-  function setupVisibilityHandling(canvas: HTMLCanvasElement, _wasmInstance: any) {
+  function setupVisibilityHandling(canvas: HTMLCanvasElement, wasmInstance: unknown) {
+    // Keep reference to wasmInstance for potential future use (pause/resume functionality)
+    void wasmInstance;
+
     // Clean up any previous listeners first
     visibilityUnsubscribers.forEach((unsub) => unsub());
     visibilityUnsubscribers = [];
@@ -320,8 +323,9 @@ export function createWasmCanvas(options: CreateWasmCanvasOptions): [
         window._wasmInitPromises[uniqueId].reject(
           new Error('New initialization started for ' + uniqueId),
         );
-      } catch (_e) {
+      } catch (rejectionError) {
         /*ignore rejection error*/
+        void rejectionError;
       }
       delete window._wasmInitPromises[uniqueId];
     }
@@ -386,7 +390,7 @@ export function createWasmCanvas(options: CreateWasmCanvasOptions): [
       setIsReady(true);
       // Setup visibility listeners now that WASM is ready
       setupVisibilityHandling(canvas, instance);
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Handle errors rejected by loadWasmViaScript promise (e.g., actual init errors, script load errors)
       console.error('[' + uniqueId + '] Initialize CATCH block triggered:');
       console.error(err); // Log the actual error
@@ -460,21 +464,24 @@ export function createWasmCanvas(options: CreateWasmCanvasOptions): [
 
     // Ideal: Call WASM's own cleanup function if it exists
     const module = wasmModule();
-    if (typeof module?.free === 'function') {
-      // Check common names like 'free'
-      console.log('[' + uniqueId + '] Calling WASM free function.');
-      try {
-        module.free();
-      } catch (e) {
-        console.error('[' + uniqueId + '] Error calling WASM free():', e);
-      }
-    } else if (typeof module?.destroy === 'function') {
-      // Check for 'destroy'
-      console.log('[' + uniqueId + '] Calling WASM destroy function.');
-      try {
-        module.destroy();
-      } catch (e) {
-        console.error('[' + uniqueId + '] Error calling WASM destroy():', e);
+    if (module && typeof module === 'object') {
+      const moduleObj = module as { free?: () => void; destroy?: () => void };
+      if (typeof moduleObj.free === 'function') {
+        // Check common names like 'free'
+        console.log('[' + uniqueId + '] Calling WASM free function.');
+        try {
+          moduleObj.free();
+        } catch (e) {
+          console.error('[' + uniqueId + '] Error calling WASM free():', e);
+        }
+      } else if (typeof moduleObj.destroy === 'function') {
+        // Check for 'destroy'
+        console.log('[' + uniqueId + '] Calling WASM destroy function.');
+        try {
+          moduleObj.destroy();
+        } catch (e) {
+          console.error('[' + uniqueId + '] Error calling WASM destroy():', e);
+        }
       }
     }
     setWasmModule(null); // Clear the wasm module state
@@ -495,8 +502,9 @@ export function createWasmCanvas(options: CreateWasmCanvasOptions): [
         window._wasmInitPromises[uniqueId].reject(
           new Error('WASM hook (' + uniqueId + ') cleaned up before init settled.'),
         );
-      } catch (_e) {
+      } catch (settlementError) {
         /* Ignore error if already settled */
+        void settlementError;
       }
       delete window._wasmInitPromises[uniqueId];
       console.log('[' + uniqueId + '] Removed from _wasmInitPromises.');
