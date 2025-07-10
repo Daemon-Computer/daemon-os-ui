@@ -14,7 +14,7 @@ import { usePrograms } from "./components/ProgramWindow/programContext";
 import ProgramWindow from "./components/ProgramWindow/ProgramWindow";
 import ProgramDatabase from "./components/ProgramDatabase";
 import DrivesAndPrograms from "./components/DrivesAndPrograms";
-import { WalletProvider, useWallet } from "./components/Wallet/WalletContext";
+import { WalletProvider } from "./components/Wallet/WalletContext";
 import { ThemeProvider } from "./components/Theme/ThemeContext";
 import SplashScreen from "./components/SplashScreen";
 import "./fadeEffects.css";
@@ -239,7 +239,7 @@ export default function App() {
                 <>
                   <For each={activePrograms}>
                     {(program) => {
-                      const ProgramComponent = program.component as Component;
+                      const programComponent = program.component as Component;
                       
                       // Use special window for WGPU notification
                       if (program.label === "WGPU Support Check") {
@@ -250,7 +250,7 @@ export default function App() {
                             onClose={() => handleCloseProgram(program.id)}
                           >
                             <WalletProvider>
-                              <ProgramComponent />
+                              <programComponent />
                             </WalletProvider>
                           </WGPUNotificationWindow>
                         );
@@ -263,7 +263,7 @@ export default function App() {
                           onClose={() => handleCloseProgram(program.id)}
                         >
                           <WalletProvider>
-                            <ProgramComponent />
+                            <programComponent />
                           </WalletProvider>
                         </ProgramWindow>
                       );

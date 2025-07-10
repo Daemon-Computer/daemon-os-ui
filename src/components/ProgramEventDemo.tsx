@@ -1,38 +1,36 @@
-import { createSignal, Show, onMount } from "solid-js";
-import { WasmIframeWrapper } from "./WasmIframeWrapper";
-import type { WasmCanvasBridgeInterface } from "./hooks/createWasmCanvas";
-import type { EventPayload } from "../api/game/events";
-import { WASM_ENGINE_URL, WASM_BINDINGS_URL } from "~/api/constants";
+import { createSignal, Show, onMount } from 'solid-js';
+import WasmIframeWrapper from './WasmIframeWrapper';
+import type { WasmCanvasBridgeInterface } from './hooks/createWasmCanvas';
+import type { EventPayload } from '../api/game/events';
+import { WASM_ENGINE_URL, WASM_BINDINGS_URL } from '~/api/constants';
 
 // Enum to match Rust-side ProgramPartName
 enum ProgramPartName {
-  Empty = "Empty",
-  SimpleBody = "SimpleBody",
-  SimpleLimb = "SimpleLimb",
-  SimpleEye = "SimpleEye",
+  EMPTY = 'Empty',
+  SIMPLE_BODY = 'SimpleBody',
+  SIMPLE_LIMB = 'SimpleLimb',
+  SIMPLE_EYE = 'SimpleEye',
   // Robot parts for GLTF testing
-  BoxRobotBody = "BoxRobotBody",
-  SphereRobotHead = "SphereRobotHead",
-  CameraRobotEye = "CameraRobotEye",
-  AntennaRobotAddon = "AntennaRobotAddon",
-  HexagonalRobotLegBase = "HexagonalRobotLegBase",
-  SideRobotLegTibia = "SideRobotLegTibia",
-  SideRobotLegEnd = "SideRobotLegEnd",
-  CrossRobotLegJoint = "CrossRobotLegJoint",
+  BOX_ROBOT_BODY = 'BoxRobotBody',
+  SPHERE_ROBOT_HEAD = 'SphereRobotHead',
+  CAMERA_ROBOT_EYE = 'CameraRobotEye',
+  ANTENNA_ROBOT_ADDON = 'AntennaRobotAddon',
+  HEXAGONAL_ROBOT_LEG_BASE = 'HexagonalRobotLegBase',
+  SIDE_ROBOT_LEG_TIBIA = 'SideRobotLegTibia',
+  SIDE_ROBOT_LEG_END = 'SideRobotLegEnd',
+  CROSS_ROBOT_LEG_JOINT = 'CrossRobotLegJoint',
 }
 
 export default function ProgramEventDemo() {
-  const [bridge, setBridge] = createSignal<WasmCanvasBridgeInterface | null>(
-    null,
-  );
+  const [bridge, setBridge] = createSignal<WasmCanvasBridgeInterface | null>(null);
   const [webGPUSupported, setWebGPUSupported] = createSignal(true); // Assume true
 
   onMount(() => {
-    if (typeof navigator !== "undefined" && !("gpu" in navigator)) {
+    if (typeof navigator !== 'undefined' && !('gpu' in navigator)) {
       setWebGPUSupported(false);
-      console.error("WebGPU Check Failed: Not supported in this browser.");
+      console.error('WebGPU Check Failed: Not supported in this browser.');
     } else {
-      console.log("WebGPU Check Passed.");
+      console.log('WebGPU Check Passed.');
     }
   });
 
@@ -54,35 +52,35 @@ export default function ProgramEventDemo() {
 
   // const parts = [
   //   {
-  //     name: ProgramPartName.BoxRobotBody,
+  //     name: ProgramPartName.BOX_ROBOT_BODY,
   //     params: [],
   //   },
   //   {
-  //     name: ProgramPartName.SphereRobotHead,
+  //     name: ProgramPartName.SPHERE_ROBOT_HEAD,
   //     params: [],
   //   },
   //   {
-  //     name: ProgramPartName.CameraRobotEye,
+  //     name: ProgramPartName.CAMERA_ROBOT_EYE,
   //     params: [],
   //   },
   //   {
-  //     name: ProgramPartName.AntennaRobotAddon,
+  //     name: ProgramPartName.ANTENNA_ROBOT_ADDON,
   //     params: [],
   //   },
   //   {
-  //     name: ProgramPartName.HexagonalRobotLegBase,
+  //     name: ProgramPartName.HEXAGONAL_ROBOT_LEG_BASE,
   //     params: [],
   //   },
   //   {
-  //     name: ProgramPartName.SideRobotLegTibia,
+  //     name: ProgramPartName.SIDE_ROBOT_LEG_TIBIA,
   //     params: [],
   //   },
   //   {
-  //     name: ProgramPartName.SideRobotLegEnd,
+  //     name: ProgramPartName.SIDE_ROBOT_LEG_END,
   //     params: [],
   //   },
   //   {
-  //     name: ProgramPartName.CrossRobotLegJoint,
+  //     name: ProgramPartName.CROSS_ROBOT_LEG_JOINT,
   //     params: [],
   //   },
   // ];
@@ -90,75 +88,75 @@ export default function ProgramEventDemo() {
   // Legacy parts for testing (complete structure that was known to work)
   const parts = [
     {
-      name: ProgramPartName.SimpleBody,
+      name: ProgramPartName.SIMPLE_BODY,
       params: [4, 5, 50, 40, 20, 85],
     },
     {
-      name: ProgramPartName.SimpleEye,
+      name: ProgramPartName.SIMPLE_EYE,
       params: [],
     },
     {
-      name: ProgramPartName.SimpleLimb,
+      name: ProgramPartName.SIMPLE_LIMB,
       params: [2],
     },
     {
-      name: ProgramPartName.Empty,
+      name: ProgramPartName.EMPTY,
       params: [],
     },
     {
-      name: ProgramPartName.Empty,
+      name: ProgramPartName.EMPTY,
       params: [],
     },
   ];
 
   // Callback function for the wrapper to pass the bridge when ready
   const handleWasmReady = (b: WasmCanvasBridgeInterface) => {
-    console.log("ProgramEventDemo WASM canvas is ready.");
+    console.log('ProgramEventDemo WASM canvas is ready.');
     setBridge(b);
 
     // Initialize with the ProgramBuilder format the Rust code expects
     if (b.isReady()) {
       // Create a program builder object matching the Rust-side ProgramBuilder struct
       const programBuilder = {
-        id: "new_program",
+        id: 'new_program',
         palette: miniPalette,
         parts: parts,
       };
 
       // Use type assertion to bypass TypeScript error - this structure is correct for Rust
       const event: EventPayload = { ViewModel: programBuilder as any };
-      console.log("Sending initial ViewModel to WASM:", event);
+      console.log('Sending initial ViewModel to WASM:', event);
       b.queueEventForWasm(event);
     }
   };
 
-  const handleShowNormals = () => {
+  const _handleShowNormals = () => {
     const b = bridge();
     if (b?.isReady()) {
-      const event: EventPayload = { DebugRayMarch: "Normals" };
-      console.log("Sending event to demo WASM:", event);
+      const event: EventPayload = { DebugRayMarch: 'Normals' };
+      console.log('Sending event to demo WASM:', event);
       b.queueEventForWasm(event);
     } else {
       console.warn("Demo WASM bridge not ready to send 'Normals' event.");
     }
   };
 
-  const handleShowDefault = () => {
+  const _handleShowDefault = () => {
     const b = bridge();
     if (b?.isReady()) {
-      const event: EventPayload = { DebugRayMarch: "Disabled" };
-      console.log("Sending event to demo WASM:", event);
+      const event: EventPayload = { DebugRayMarch: 'Disabled' };
+      console.log('Sending event to demo WASM:', event);
       b.queueEventForWasm(event);
     } else {
       console.warn("Demo WASM bridge not ready to send 'Disabled' event.");
     }
   };
 
-  const handleShowSteps = () => {
+  const _handleShowSteps = () => {
     const b = bridge();
     if (b?.isReady()) {
-      const event: EventPayload = { DebugRayMarch: "Steps" };
-      console.log("Sending event to demo WASM:", event);
+      const event: EventPayload = { DebugRayMarch: 'Steps' };
+      console.log('Sending event to demo WASM:', event);
       b.queueEventForWasm(event);
     } else {
       console.warn("Demo WASM bridge not ready to send 'Steps' event.");
@@ -172,8 +170,7 @@ export default function ProgramEventDemo() {
         <div class="p-4 text-center text-red-500 border border-red-500">
           <p>WebGPU Not Supported</p>
           <p class="mt-2 text-sm">
-            Please use a recent version of Chrome, Edge, or enable flags in
-            Firefox.
+            Please use a recent version of Chrome, Edge, or enable flags in Firefox.
           </p>
         </div>
       </Show>

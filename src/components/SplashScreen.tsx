@@ -1,5 +1,4 @@
-import { createSignal, onMount, Show, For, createMemo } from 'solid-js';
-import type { Component } from 'solid-js';
+import { createSignal, onMount, Show, For, createMemo, untrack } from 'solid-js';
 import styles from '~/components/SplashScreen.module.css';
 import { preloadAllAssets, type AssetStatus } from '~/utils/assetPreloader';
 
@@ -25,7 +24,7 @@ interface DisplayMessage {
 
 const MAX_VISIBLE_MESSAGES = 7;
 
-const SplashScreen: Component<SplashScreenProps> = (props) => {
+export default function SplashScreen(props: SplashScreenProps) {
   const [isVisible, setIsVisible] = createSignal(true);
   const [fadeOut, setFadeOut] = createSignal(false);
   const [statusMessages, setStatusMessages] = createSignal<DisplayMessage[]>([]);
@@ -71,10 +70,10 @@ const SplashScreen: Component<SplashScreenProps> = (props) => {
       ]);
     })
       .then(() => {
-        const allLinesRevealed = revealedLines().every((line) => line);
-        const timeToWait = allLinesRevealed
+        const areAllLinesRevealed = untrack(() => revealedLines().every((line) => line));
+        const timeToWait = areAllLinesRevealed
           ? 1500
-          : (revealedLines().length - currentLineIndex) * 300 + 1500;
+          : untrack(() => (revealedLines().length - currentLineIndex) * 300 + 1500);
 
         setStatusMessages((prev) => [
           ...prev,
@@ -114,18 +113,22 @@ const SplashScreen: Component<SplashScreenProps> = (props) => {
       });
   });
 
-  const LogoDisplay = () => (
-    <div class="whitespace-pre text-xs sm:text-sm md:text-base leading-tight sm:leading-tight md:leading-normal mb-4 font-mono text-[#4604ec]">
-      {ASCII_LOGO.map((line, index) => (
-        <div
-          class="transition-opacity duration-300 ease-in-out"
-          style={{ opacity: revealedLines()[index] ? 1 : 0 }}
-        >
-          {line}
-        </div>
-      ))}
-    </div>
-  );
+  function LogoDisplay() {
+    return (
+      <div class="whitespace-pre text-xs sm:text-sm md:text-base leading-tight sm:leading-tight md:leading-normal mb-4 font-mono text-[#4604ec]">
+        <For each={ASCII_LOGO}>
+          {(line, index) => (
+            <div
+              class="transition-opacity duration-300 ease-in-out"
+              style={{ opacity: revealedLines()[index()] ? 1 : 0 }}
+            >
+              {line}
+            </div>
+          )}
+        </For>
+      </div>
+    );
+  }
 
   return (
     <Show when={isVisible()}>
@@ -166,7 +169,7 @@ const SplashScreen: Component<SplashScreenProps> = (props) => {
                     style={{
                       transform: `translateY(-${itemData().position * 4}px)`,
                       color: message.isError
-                        ? 'rgba(255, 100, 100, ${itemData().alpha})'
+                        ? `rgba(255, 100, 100, ${itemData().alpha})`
                         : `rgba(255, 255, 255, ${itemData().alpha})`,
                     }}
                   >
@@ -174,7 +177,7 @@ const SplashScreen: Component<SplashScreenProps> = (props) => {
                       class="mr-2"
                       style={{
                         color: message.isError
-                          ? 'rgba(255, 100, 100, ${itemData().alpha})'
+                          ? `rgba(255, 100, 100, ${itemData().alpha})`
                           : `rgba(13, 253, 247, ${itemData().alpha})`,
                       }}
                     >
@@ -190,6 +193,4 @@ const SplashScreen: Component<SplashScreenProps> = (props) => {
       </div>
     </Show>
   );
-};
-
-export default SplashScreen;
+}
