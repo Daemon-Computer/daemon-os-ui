@@ -1,4 +1,4 @@
-import { WASM_ENGINE_URL, WASM_BINDINGS_URL } from '~/api/constants';
+import { WASM_ENGINE_URL, WASM_BINDINGS_URL } from '../api/constants';
 
 export interface AssetStatus {
   message: string;

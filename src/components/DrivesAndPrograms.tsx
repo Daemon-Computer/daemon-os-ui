@@ -5,6 +5,7 @@ import type {
   SuiTransactionBlockResponse,
   SuiTransactionBlockResponseOptions,
 } from '@mysten/sui/client';
+import type { WalletAccount } from '@mysten/wallet-standard';
 import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
 import { MIST_PER_SUI } from '@mysten/sui/utils';
 import WasmIframeWrapper from './WasmIframeWrapper';
@@ -25,7 +26,7 @@ interface SignAndExecuteMethodHolder {
   signAndExecuteTransactionBlock: (args: {
     transactionBlock: Transaction;
     chain: string;
-    account: any;
+    account: WalletAccount;
     options?: SuiTransactionBlockResponseOptions;
   }) => Promise<SuiTransactionBlockResponse>;
 }
@@ -47,8 +48,10 @@ export default function DrivesAndPrograms() {
   const { activePrograms, restoreProgram, bringToFront, registerProgram } = usePrograms();
   const [isLoading, setIsLoading] = createSignal(false);
   const [isConfigLoading, setIsConfigLoading] = createSignal(true);
-  const [, setStatusMessage] = createSignal('');
-  const [, setStatusType] = createSignal<'info' | 'success' | 'error' | 'warning'>('info');
+  const [_statusMessage, setStatusMessage] = createSignal('');
+  const [_statusType, setStatusType] = createSignal<'info' | 'success' | 'error' | 'warning'>(
+    'info',
+  );
   const [userDrives, setUserDrives] = createSignal<UserDrive[]>([]);
   const [shopConfig, setShopConfig] = createSignal<ShopConfig>({
     priceMist: null,
@@ -58,6 +61,9 @@ export default function DrivesAndPrograms() {
   const [configValid, setConfigValid] = createSignal(false);
   const [viewerBridge, setViewerBridge] = createSignal<WasmCanvasBridgeInterface | null>(null);
   const [webGPUSupported, setWebGPUSupported] = createSignal(true); // Assume true until checked
+
+  void _statusMessage; // Preserved for future use
+  void _statusType; // Preserved for future use
 
   // Check WebGPU support on mount
   onMount(() => {
@@ -95,7 +101,7 @@ export default function DrivesAndPrograms() {
     if (bridge?.isReady()) {
       // Use Drive: null which was triggering the model loading
       console.log('Sending Drive: null event to trigger model loading');
-      bridge.queueEventForWasm({ Drive: null as any });
+      bridge.queueEventForWasm({ Drive: {} });
     }
   };
 
@@ -204,10 +210,10 @@ export default function DrivesAndPrograms() {
       });
 
       if (minterObject.data?.content?.dataType === 'moveObject') {
-        const fields = minterObject.data.content.fields as any;
-        const priceMist = BigInt(fields.price || '0');
+        const fields = minterObject.data.content.fields as Record<string, unknown>;
+        const priceMist = BigInt((fields.price as string) || '0');
         const priceSui = (Number(priceMist) / Number(MIST_PER_SUI)).toFixed(2);
-        const isMinterEnabled = fields.enabled === true;
+        const isMinterEnabled = (fields.enabled as boolean) === true;
 
         setShopConfig({ priceMist, priceSui, isMinterEnabled });
       } else {

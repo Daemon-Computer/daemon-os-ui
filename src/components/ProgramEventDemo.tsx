@@ -2,7 +2,7 @@ import { createSignal, Show, onMount } from 'solid-js';
 import WasmIframeWrapper from './WasmIframeWrapper';
 import type { WasmCanvasBridgeInterface } from './hooks/createWasmCanvas';
 import type { EventPayload } from '../api/game/events';
-import { WASM_ENGINE_URL, WASM_BINDINGS_URL } from '~/api/constants';
+import { WASM_ENGINE_URL, WASM_BINDINGS_URL } from '../api/constants';
 
 // Enum to match Rust-side ProgramPartName
 enum ProgramPartName {

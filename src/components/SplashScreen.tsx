@@ -1,6 +1,6 @@
 import { createSignal, onMount, Show, For, createMemo, untrack } from 'solid-js';
-import styles from '~/components/SplashScreen.module.css';
-import { preloadAllAssets, type AssetStatus } from '~/utils/assetPreloader';
+import styles from './SplashScreen.module.css';
+import { preloadAllAssets, type AssetStatus } from '../utils/assetPreloader';
 
 const ASCII_LOGO = [
   '██████╗  █████╗ ███████╗███╗   ███╗ ██████╗ ███╗   ██╗',

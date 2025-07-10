@@ -10,7 +10,7 @@ import type {
   PaginationArguments,
   OrderArguments,
 } from '@mysten/sui/client';
-import { DAEMON_PACKAGE_ID } from '~/api/constants';
+import { DAEMON_PACKAGE_ID } from '../../api/constants';
 
 // Define window property for TypeScript
 declare global {
