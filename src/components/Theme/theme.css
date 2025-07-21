@@ -1,568 +1,572 @@
-/* 
-    
-    This file was created with Claude 3.7 Sonnet (Extended Thinking Mode) 
-    
-    The 98.CSS file is a humongous endeavor to alter and I did not want to fuck with it 
+/*
+
+    This file was created with Claude 3.7 Sonnet (Extended Thinking Mode)
+
+    The 98.CSS file is a humongous endeavor to alter and I did not want to fuck with it
     - Francisco Casiano --- Apr 17, 2025
-    
+
 */
 
 /* overlays on 98.css */
 :root {
-    /* Base colors */
-    --theme-primary: #000080;
-    --theme-secondary: #c0c0c0;
-    --theme-accent: #008080;
+  /* Base colors */
+  --theme-primary: #000080;
+  --theme-secondary: #c0c0c0;
+  --theme-accent: #008080;
 
-    /* Desktop background - one of the most visible elements */
-    --theme-desktop-bg: #008080;
+  /* Desktop background - one of the most visible elements */
+  --theme-desktop-bg: #008080;
 
-    /* Window colors - selectively override 98.css */
-    --theme-window-bg: #c0c0c0;
-    --theme-titlebar-bg-start: navy;
-    --theme-titlebar-bg-end: #1084d0;
-    --theme-titlebar-text: #ffffff;
+  /* Window colors - selectively override 98.css */
+  --theme-window-bg: #c0c0c0;
+  --theme-titlebar-bg-start: navy;
+  --theme-titlebar-bg-end: #1084d0;
+  --theme-titlebar-text: #ffffff;
 
-    /* Text colors */
-    --theme-text: #000000;
-    --theme-text-secondary: #222222;
-    --theme-text-disabled: grey;
+  /* Text colors */
+  --theme-text: #000000;
+  --theme-text-secondary: #222222;
+  --theme-text-disabled: grey;
 
-    /* Status indicators */
-    --theme-success: #008000;
-    --theme-error: #ff0000;
-    --theme-warning: #ffcc00;
-    --theme-info: #0000ff;
+  /* Status indicators */
+  --theme-success: #008000;
+  --theme-error: #ff0000;
+  --theme-warning: #ffcc00;
+  --theme-info: #0000ff;
 }
 
 /* Apply desktop background */
 body,
 #root {
-    background-color: var(--theme-desktop-bg) !important;
+  background-color: var(--theme-desktop-bg) !important;
 }
 
 /* Theme: daemon-os */
 [data-theme='daemon-os'] {
-    /* Base colors extracted from module.css files */
-    --theme-primary: #4604ec;
-    --theme-secondary: #9a5cff;
-    --theme-accent: #0dfdf7;
-    --theme-desktop-bg: #9a5cff;
+  /* Base colors extracted from module.css files */
+  --theme-primary: #4604ec;
+  --theme-secondary: #9a5cff;
+  --theme-accent: #0dfdf7;
+  --theme-desktop-bg: #9a5cff;
 
-    /* Window colors */
-    --theme-window-bg: white;
-    --theme-titlebar-bg-start: white;
-    --theme-titlebar-bg-end: white;
-    --theme-titlebar-text: #4604ec;
+  /* Window colors */
+  --theme-window-bg: white;
+  --theme-titlebar-bg-start: white;
+  --theme-titlebar-bg-end: white;
+  --theme-titlebar-text: #4604ec;
 
-    /* Text colors */
-    --theme-text: #0c046f;
-    --theme-text-secondary: #4604ec;
-    --theme-text-disabled: #666666;
+  /* Text colors */
+  --theme-text: #0c046f;
+  --theme-text-secondary: #4604ec;
+  --theme-text-disabled: #666666;
 
-    /* Status indicators */
-    --theme-success: #00cc99;
-    --theme-error: #ff0000;
-    --theme-warning: #fff7a0;
-    --theme-info: #0dfdf7;
+  /* Status indicators */
+  --theme-success: #00cc99;
+  --theme-error: #ff0000;
+  --theme-warning: #fff7a0;
+  --theme-info: #0dfdf7;
 
-    /* Scrollbar colors */
-    --theme-scrollbar-bg: #c3b9ff;
-    --theme-scrollbar-thumb: #4604ec;
-    --theme-scrollbar-button: #e1e1e1;
-    --theme-scrollbar-arrow: #0c046f;
+  /* Scrollbar colors */
+  --theme-scrollbar-bg: #c3b9ff;
+  --theme-scrollbar-thumb: #4604ec;
+  --theme-scrollbar-button: #e1e1e1;
+  --theme-scrollbar-arrow: #0c046f;
 }
 
 /* Apply theme overrides with high specificity selectors */
 
 /* Title bar color override */
 [data-theme] .title-bar {
-    background: linear-gradient(90deg, var(--theme-titlebar-bg-start), var(--theme-titlebar-bg-end)) !important;
+  background: linear-gradient(
+    90deg,
+    var(--theme-titlebar-bg-start),
+    var(--theme-titlebar-bg-end)
+  ) !important;
 }
 
 [data-theme] .title-bar-text {
-    color: var(--theme-titlebar-text) !important;
+  color: var(--theme-titlebar-text) !important;
 }
 
 /* Window overrides */
 [data-theme] .window {
-    background-color: var(--theme-window-bg) !important;
-    color: var(--theme-text) !important;
+  background-color: var(--theme-window-bg) !important;
+  color: var(--theme-text) !important;
 }
 
 [data-theme] .window-body {
-    color: var(--theme-text) !important;
+  color: var(--theme-text) !important;
 }
 
 /* Status bar overrides */
 [data-theme] .status-bar {
-    background-color: var(--theme-secondary) !important;
+  background-color: var(--theme-secondary) !important;
 }
 
 [data-theme] .status-bar-field {
-    color: var(--theme-text) !important;
+  color: var(--theme-text) !important;
 }
 
 /* Text overrides */
 [data-theme] .window-body p,
 [data-theme] .window-body div,
 [data-theme] .window-body span {
-    color: var(--theme-text);
+  color: var(--theme-text);
 }
 
 /* Modal dialog-specific overrides */
 [data-theme] .modal {
-    background-color: var(--theme-window-bg) !important;
+  background-color: var(--theme-window-bg) !important;
 }
 
 /* Focus styles for buttons */
 [data-theme] button:focus,
-[data-theme] input[type=reset]:focus,
-[data-theme] input[type=submit]:focus {
-    outline: 1px dotted var(--theme-accent);
-    outline-offset: -4px;
+[data-theme] input[type='reset']:focus,
+[data-theme] input[type='submit']:focus {
+  outline: 1px dotted var(--theme-accent);
+  outline-offset: -4px;
 }
 
 /* Window overrides for daemon-os theme */
-[data-theme="daemon-os"] .window {
-    background: white;
-    border-top: 2px solid #e1e1e1;
-    border-left: 2px solid #0dfdf7;
-    border-right: 2px solid #11b3f4;
-    border-bottom: 2px solid #3d00f3;
-    box-shadow: none;
+[data-theme='daemon-os'] .window {
+  background: white;
+  border-top: 2px solid #e1e1e1;
+  border-left: 2px solid #0dfdf7;
+  border-right: 2px solid #11b3f4;
+  border-bottom: 2px solid #3d00f3;
+  box-shadow: none;
 }
 
-[data-theme="daemon-os"] .title-bar {
-    background: white;
-    background-image: none;
-    box-shadow: none;
-    margin: 4px 8px;
-    border-top: 2px solid #e1e1e1;
-    border-left: 2px solid #e1e1e1;
-    border-right: 2px solid #904cff;
-    border-bottom: 2px solid #904cff;
-    width: fit-content;
+[data-theme='daemon-os'] .title-bar {
+  background: white;
+  background-image: none;
+  box-shadow: none;
+  margin: 4px 8px;
+  border-top: 2px solid #e1e1e1;
+  border-left: 2px solid #e1e1e1;
+  border-right: 2px solid #904cff;
+  border-bottom: 2px solid #904cff;
+  width: fit-content;
 }
 
 /* Title bar controls (close, minimize, maximize buttons) */
-[data-theme="daemon-os"] .title-bar-controls button {
-    background-color: #e1e1e1;
-    box-shadow: none;
-    border: none;
-    border-top: 1px solid #e1e1e1;
-    border-left: 1px solid #e1e1e1;
-    border-right: 1px solid #904cff;
-    border-bottom: 1px solid #904cff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+[data-theme='daemon-os'] .title-bar-controls button {
+  background-color: #e1e1e1;
+  box-shadow: none;
+  border: none;
+  border-top: 1px solid #e1e1e1;
+  border-left: 1px solid #e1e1e1;
+  border-right: 1px solid #904cff;
+  border-bottom: 1px solid #904cff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Specific button colors */
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Close"] {
-    background-color: #ff4c4c;
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Close'] {
+  background-color: #ff4c4c;
 }
 
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Minimize"] {
-    background-color: #d9d9d9;
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Minimize'] {
+  background-color: #d9d9d9;
 }
 
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Maximize"],
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Restore"] {
-    background-color: #d9d9d9;
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Maximize'],
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Restore'] {
+  background-color: #d9d9d9;
 }
 
 /* Hover states */
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Close"]:hover {
-    background-color: #ff6b6b;
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Close']:hover {
+  background-color: #ff6b6b;
 }
 
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Minimize"]:hover,
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Maximize"]:hover,
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Restore"]:hover {
-    background-color: #f0f0f0;
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Minimize']:hover,
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Maximize']:hover,
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Restore']:hover {
+  background-color: #f0f0f0;
 }
 
 /* Active states */
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Close"]:active {
-    background-color: #e62e2e;
-    border-top: 1px solid #904cff;
-    border-left: 1px solid #904cff;
-    border-right: 1px solid #e1e1e1;
-    border-bottom: 1px solid #e1e1e1;
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Close']:active {
+  background-color: #e62e2e;
+  border-top: 1px solid #904cff;
+  border-left: 1px solid #904cff;
+  border-right: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
 }
 
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Minimize"]:active,
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Maximize"]:active,
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Restore"]:active {
-    background-color: #c3b9ff;
-    border-top: 1px solid #904cff;
-    border-left: 1px solid #904cff;
-    border-right: 1px solid #e1e1e1;
-    border-bottom: 1px solid #e1e1e1;
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Minimize']:active,
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Maximize']:active,
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Restore']:active {
+  background-color: #c3b9ff;
+  border-top: 1px solid #904cff;
+  border-left: 1px solid #904cff;
+  border-right: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
 }
 
 /* Icon colors for contrast */
-[data-theme="daemon-os"] .title-bar-controls button svg {
-    width: 14px;
-    height: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+[data-theme='daemon-os'] .title-bar-controls button svg {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Close"] svg path {
-    fill: white !important;
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Close'] svg path {
+  fill: white !important;
 }
 
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Minimize"] svg path,
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Maximize"] svg path,
-[data-theme="daemon-os"] .title-bar-controls button[aria-label="Restore"] svg path {
-    fill: #4604ec !important;
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Minimize'] svg path,
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Maximize'] svg path,
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Restore'] svg path {
+  fill: #4604ec !important;
 }
 
 /* Disabled states */
-[data-theme="daemon-os"] .title-bar-controls button:disabled {
-    background-color: #b8b8b8;
-    opacity: 0.7;
-    cursor: not-allowed;
+[data-theme='daemon-os'] .title-bar-controls button:disabled {
+  background-color: #b8b8b8;
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 /* Specific button icons */
-[data-theme="daemon-os"] .title-bar-controls button[aria-label=Minimize],
-[data-theme="daemon-os"] .title-bar-controls button[aria-label].minimize {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='6' height='2' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%234604ec' d='M0 0h6v2H0z'/%3E%3C/svg%3E");
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Minimize'],
+[data-theme='daemon-os'] .title-bar-controls button[aria-label].minimize {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='6' height='2' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%234604ec' d='M0 0h6v2H0z'/%3E%3C/svg%3E");
 }
 
-[data-theme="daemon-os"] .title-bar-controls button[aria-label=Maximize],
-[data-theme="daemon-os"] .title-bar-controls button[aria-label].maximize {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='9' height='9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M9 0H0v9h9V0zM8 2H1v6h7V2z' fill='%234604ec'/%3E%3C/svg%3E");
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Maximize'],
+[data-theme='daemon-os'] .title-bar-controls button[aria-label].maximize {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='9' height='9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M9 0H0v9h9V0zM8 2H1v6h7V2z' fill='%234604ec'/%3E%3C/svg%3E");
 }
 
-[data-theme="daemon-os"] .title-bar-controls button[aria-label=Restore],
-[data-theme="daemon-os"] .title-bar-controls button[aria-label].restore {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='8' height='9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%234604ec' d='M2 0h6v2H2zM7 2h1v4H7zM2 2h1v1H2zM6 5h1v1H6zM0 3h6v2H0zM5 5h1v4H5zM0 5h1v4H0zM1 8h4v1H1z'/%3E%3C/svg%3E");
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Restore'],
+[data-theme='daemon-os'] .title-bar-controls button[aria-label].restore {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='8' height='9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%234604ec' d='M2 0h6v2H2zM7 2h1v4H7zM2 2h1v1H2zM6 5h1v1H6zM0 3h6v2H0zM5 5h1v4H5zM0 5h1v4H0zM1 8h4v1H1z'/%3E%3C/svg%3E");
 }
 
-[data-theme="daemon-os"] .title-bar-controls button[aria-label=Close],
-[data-theme="daemon-os"] .title-bar-controls button[aria-label].close {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='8' height='7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0h2v1h1v1h2V1h1V0h2v1H7v1H6v1H5v1h1v1h1v1h1v1H6V6H5V5H3v1H2v1H0V6h1V5h1V4h1V3H2V2H1V1H0V0z' fill='%234604ec'/%3E%3C/svg%3E");
+[data-theme='daemon-os'] .title-bar-controls button[aria-label='Close'],
+[data-theme='daemon-os'] .title-bar-controls button[aria-label].close {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='8' height='7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0h2v1h1v1h2V1h1V0h2v1H7v1H6v1H5v1h1v1h1v1h1v1H6V6H5V5H3v1H2v1H0V6h1V5h1V4h1V3H2V2H1V1H0V0z' fill='%234604ec'/%3E%3C/svg%3E");
 }
 
-[data-theme="daemon-os"] .window-body {
-    background-color: #b0a9e4;
-    color: #0c046f;
-    border-top: 4px solid #8d46ff;
-    border-left: 4px solid #8d46ff;
-    border-right: 4px solid #c3c3c2;
-    border-bottom: 4px solid #c3c3c2;
-    margin: 8px;
+[data-theme='daemon-os'] .window-body {
+  background-color: #b0a9e4;
+  color: #0c046f;
+  border-top: 4px solid #8d46ff;
+  border-left: 4px solid #8d46ff;
+  border-right: 4px solid #c3c3c2;
+  border-bottom: 4px solid #c3c3c2;
+  margin: 8px;
 }
 
 /* Button styling for daemon-os */
-[data-theme="daemon-os"] button,
-[data-theme="daemon-os"] input[type="reset"],
-[data-theme="daemon-os"] input[type="submit"] {
-    background: white;
-    border: none;
-    border-top: 2px solid #e1e1e1;
-    border-left: 2px solid #e1e1e1;
-    border-right: 2px solid #904cff;
-    border-bottom: 2px solid #904cff;
-    box-shadow: none;
-    color: #0c046f;
-    border-radius: 0;
+[data-theme='daemon-os'] button,
+[data-theme='daemon-os'] input[type='reset'],
+[data-theme='daemon-os'] input[type='submit'] {
+  background: white;
+  border: none;
+  border-top: 2px solid #e1e1e1;
+  border-left: 2px solid #e1e1e1;
+  border-right: 2px solid #904cff;
+  border-bottom: 2px solid #904cff;
+  box-shadow: none;
+  color: #0c046f;
+  border-radius: 0;
 }
 
 /* Handle Tailwind button classes (like in ProgramEventDemo) */
-[data-theme="daemon-os"] .bg-blue-500,
-[data-theme="daemon-os"] .bg-blue-600 {
-    background-color: #4604ec !important;
-    color: white !important;
-    border: none !important;
-    border-top: 2px solid #e1e1e1 !important;
-    border-left: 2px solid #e1e1e1 !important;
-    border-right: 2px solid #904cff !important;
-    border-bottom: 2px solid #904cff !important;
+[data-theme='daemon-os'] .bg-blue-500,
+[data-theme='daemon-os'] .bg-blue-600 {
+  background-color: #4604ec !important;
+  color: white !important;
+  border: none !important;
+  border-top: 2px solid #e1e1e1 !important;
+  border-left: 2px solid #e1e1e1 !important;
+  border-right: 2px solid #904cff !important;
+  border-bottom: 2px solid #904cff !important;
 }
 
-[data-theme="daemon-os"] button:not(:disabled):hover,
-[data-theme="daemon-os"] input[type="reset"]:not(:disabled):hover,
-[data-theme="daemon-os"] input[type="submit"]:not(:disabled):hover {
-    background-color: #f5f5f5;
-    color: #0c046f;
+[data-theme='daemon-os'] button:not(:disabled):hover,
+[data-theme='daemon-os'] input[type='reset']:not(:disabled):hover,
+[data-theme='daemon-os'] input[type='submit']:not(:disabled):hover {
+  background-color: #f5f5f5;
+  color: #0c046f;
 }
 
-[data-theme="daemon-os"] button.bg-blue-500:hover,
-[data-theme="daemon-os"] button.hover\:bg-blue-600:hover {
-    background-color: #5f20ff !important;
-    color: white !important;
+[data-theme='daemon-os'] button.bg-blue-500:hover,
+[data-theme='daemon-os'] button.hover\:bg-blue-600:hover {
+  background-color: #5f20ff !important;
+  color: white !important;
 }
 
 /* Input fields for daemon-os */
-[data-theme="daemon-os"] input[type="email"],
-[data-theme="daemon-os"] input[type="number"],
-[data-theme="daemon-os"] input[type="password"],
-[data-theme="daemon-os"] input[type="search"],
-[data-theme="daemon-os"] input[type="tel"],
-[data-theme="daemon-os"] input[type="text"],
-[data-theme="daemon-os"] select,
-[data-theme="daemon-os"] textarea {
-    background-color: #e1e1e1;
-    border: none;
-    border-top: 2px solid #904cff;
-    border-left: 2px solid #904cff;
-    border-right: 2px solid #e1e1e1;
-    border-bottom: 2px solid #e1e1e1;
-    box-shadow: none;
-    color: #0c046f;
+[data-theme='daemon-os'] input[type='email'],
+[data-theme='daemon-os'] input[type='number'],
+[data-theme='daemon-os'] input[type='password'],
+[data-theme='daemon-os'] input[type='search'],
+[data-theme='daemon-os'] input[type='tel'],
+[data-theme='daemon-os'] input[type='text'],
+[data-theme='daemon-os'] select,
+[data-theme='daemon-os'] textarea {
+  background-color: #e1e1e1;
+  border: none;
+  border-top: 2px solid #904cff;
+  border-left: 2px solid #904cff;
+  border-right: 2px solid #e1e1e1;
+  border-bottom: 2px solid #e1e1e1;
+  box-shadow: none;
+  color: #0c046f;
 }
 
 /* Status bars for daemon-os */
-[data-theme="daemon-os"] .status-bar {
-    background-color: #9a5cff;
+[data-theme='daemon-os'] .status-bar {
+  background-color: #9a5cff;
 }
 
-[data-theme="daemon-os"] .status-bar-field {
-    background-color: #e1e1e1;
-    color: #0c046f;
+[data-theme='daemon-os'] .status-bar-field {
+  background-color: #e1e1e1;
+  color: #0c046f;
 }
 
 /* Scrollbar styling for daemon-os */
-[data-theme="daemon-os"] ::-webkit-scrollbar-track {
-    background-color: #c3b9ff;
-    background-image: none;
+[data-theme='daemon-os'] ::-webkit-scrollbar-track {
+  background-color: #c3b9ff;
+  background-image: none;
 }
 
-[data-theme="daemon-os"] ::-webkit-scrollbar-thumb {
-    background-color: #4604ec;
-    box-shadow: none;
+[data-theme='daemon-os'] ::-webkit-scrollbar-thumb {
+  background-color: #4604ec;
+  box-shadow: none;
 }
 
-[data-theme="daemon-os"] ::-webkit-scrollbar-button:vertical:start {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23e1e1e1' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8 6H7v1H6v1H5v1H4v1h7V9h-1V8H9V7H8V6z' fill='%230c046f'/%3E%3C/svg%3E");
+[data-theme='daemon-os'] ::-webkit-scrollbar-button:vertical:start {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23e1e1e1' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8 6H7v1H6v1H5v1H4v1h7V9h-1V8H9V7H8V6z' fill='%230c046f'/%3E%3C/svg%3E");
 }
 
-[data-theme="daemon-os"] ::-webkit-scrollbar-button:vertical:end {
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23e1e1e1' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6H4v1h1v1h1v1h1v1h1V9h1V8h1V7h1V6z' fill='%230c046f'/%3E%3C/svg%3E");
+[data-theme='daemon-os'] ::-webkit-scrollbar-button:vertical:end {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23e1e1e1' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6H4v1h1v1h1v1h1v1h1V9h1V8h1V7h1V6z' fill='%230c046f'/%3E%3C/svg%3E");
 }
 
 /* Progress indicators for daemon-os */
-[data-theme="daemon-os"] .progress-indicator {
-    border: none;
-    border-top: 2px solid #e1e1e1;
-    border-left: 2px solid #e1e1e1;
-    border-right: 2px solid #904cff;
-    border-bottom: 2px solid #904cff;
-    box-shadow: none;
+[data-theme='daemon-os'] .progress-indicator {
+  border: none;
+  border-top: 2px solid #e1e1e1;
+  border-left: 2px solid #e1e1e1;
+  border-right: 2px solid #904cff;
+  border-bottom: 2px solid #904cff;
+  box-shadow: none;
 }
 
-[data-theme="daemon-os"] .progress-indicator>.progress-indicator-bar {
-    background-color: #00cc99;
+[data-theme='daemon-os'] .progress-indicator > .progress-indicator-bar {
+  background-color: #00cc99;
 }
 
-[data-theme="daemon-os"] .progress-indicator>.progress-corruption-bar {
-    background-color: #ff0000;
+[data-theme='daemon-os'] .progress-indicator > .progress-corruption-bar {
+  background-color: #ff0000;
 }
 
 /* Tree view for daemon-os */
-[data-theme="daemon-os"] ul.tree-view {
-    background: #e1e1e1;
-    box-shadow: none;
-    border: none;
-    border-top: 2px solid #e1e1e1;
-    border-left: 2px solid #e1e1e1;
-    border-right: 2px solid #904cff;
-    border-bottom: 2px solid #904cff;
+[data-theme='daemon-os'] ul.tree-view {
+  background: #e1e1e1;
+  box-shadow: none;
+  border: none;
+  border-top: 2px solid #e1e1e1;
+  border-left: 2px solid #e1e1e1;
+  border-right: 2px solid #904cff;
+  border-bottom: 2px solid #904cff;
 }
 
-[data-theme="daemon-os"] ul.tree-view a {
-    color: #0c046f;
+[data-theme='daemon-os'] ul.tree-view a {
+  color: #0c046f;
 }
 
-[data-theme="daemon-os"] ul.tree-view a:focus {
-    background-color: #4604ec;
-    color: #fff;
+[data-theme='daemon-os'] ul.tree-view a:focus {
+  background-color: #4604ec;
+  color: #fff;
 }
 
 /* Modal dialogs for daemon-os */
-[data-theme="daemon-os"] .modal {
-    background-color: #b0a9e4;
-    border-top: 2px solid #e1e1e1;
-    border-left: 2px solid #0dfdf7;
-    border-right: 2px solid #11b3f4;
-    border-bottom: 2px solid #3d00f3;
+[data-theme='daemon-os'] .modal {
+  background-color: #b0a9e4;
+  border-top: 2px solid #e1e1e1;
+  border-left: 2px solid #0dfdf7;
+  border-right: 2px solid #11b3f4;
+  border-bottom: 2px solid #3d00f3;
 }
 
 /* Focus outlines for daemon-os */
-[data-theme="daemon-os"] button:focus,
-[data-theme="daemon-os"] input:focus,
-[data-theme="daemon-os"] select:focus,
-[data-theme="daemon-os"] textarea:focus {
-    outline: 1px dotted #4604ec;
+[data-theme='daemon-os'] button:focus,
+[data-theme='daemon-os'] input:focus,
+[data-theme='daemon-os'] select:focus,
+[data-theme='daemon-os'] textarea:focus {
+  outline: 1px dotted #4604ec;
 }
 
 /* Taskbar buttons for daemon-os */
-[data-theme="daemon-os"] #taskbar button {
-    background: white;
-    border: none;
-    border-top: 2px solid #e1e1e1;
-    border-left: 2px solid #e1e1e1;
-    border-right: 2px solid #904cff;
-    border-bottom: 2px solid #904cff;
+[data-theme='daemon-os'] #taskbar button {
+  background: white;
+  border: none;
+  border-top: 2px solid #e1e1e1;
+  border-left: 2px solid #e1e1e1;
+  border-right: 2px solid #904cff;
+  border-bottom: 2px solid #904cff;
 }
 
-[data-theme="daemon-os"] #taskbar button:hover {
-    background-color: #f5f5f5;
+[data-theme='daemon-os'] #taskbar button:hover {
+  background-color: #f5f5f5;
 }
 
-[data-theme="daemon-os"] #taskbar button.active,
-[data-theme="daemon-os"] #taskbar button:active {
-    background-color: #c3b9ff;
-    border-top: 2px solid #904cff;
-    border-left: 2px solid #904cff;
-    border-right: 2px solid #e1e1e1;
-    border-bottom: 2px solid #e1e1e1;
+[data-theme='daemon-os'] #taskbar button.active,
+[data-theme='daemon-os'] #taskbar button:active {
+  background-color: #c3b9ff;
+  border-top: 2px solid #904cff;
+  border-left: 2px solid #904cff;
+  border-right: 2px solid #e1e1e1;
+  border-bottom: 2px solid #e1e1e1;
 }
 
 /* Active state for buttons */
-[data-theme="daemon-os"] button:not(:disabled):active,
-[data-theme="daemon-os"] input[type="reset"]:not(:disabled):active,
-[data-theme="daemon-os"] input[type="submit"]:not(:disabled):active {
-    background-color: #c3b9ff;
-    color: #0c046f;
-    box-shadow: none;
-    border-top: 2px solid #904cff;
-    border-left: 2px solid #904cff;
-    border-right: 2px solid #e1e1e1;
-    border-bottom: 2px solid #e1e1e1;
+[data-theme='daemon-os'] button:not(:disabled):active,
+[data-theme='daemon-os'] input[type='reset']:not(:disabled):active,
+[data-theme='daemon-os'] input[type='submit']:not(:disabled):active {
+  background-color: #c3b9ff;
+  color: #0c046f;
+  box-shadow: none;
+  border-top: 2px solid #904cff;
+  border-left: 2px solid #904cff;
+  border-right: 2px solid #e1e1e1;
+  border-bottom: 2px solid #e1e1e1;
 }
 
-[data-theme="daemon-os"] .title-bar-controls button:active {
-    background-color: #c3b9ff;
-    border-top: 1px solid #904cff;
-    border-left: 1px solid #904cff;
-    border-right: 1px solid #e1e1e1;
-    border-bottom: 1px solid #e1e1e1;
+[data-theme='daemon-os'] .title-bar-controls button:active {
+  background-color: #c3b9ff;
+  border-top: 1px solid #904cff;
+  border-left: 1px solid #904cff;
+  border-right: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
 }
 
 /* Active state for Tailwind buttons */
-[data-theme="daemon-os"] button.bg-blue-500:active,
-[data-theme="daemon-os"] button.hover\:bg-blue-600:active {
-    background-color: #3a00d6 !important;
-    color: white !important;
-    border-top: 2px solid #904cff !important;
-    border-left: 2px solid #904cff !important;
-    border-right: 2px solid #e1e1e1 !important;
-    border-bottom: 2px solid #e1e1e1 !important;
+[data-theme='daemon-os'] button.bg-blue-500:active,
+[data-theme='daemon-os'] button.hover\:bg-blue-600:active {
+  background-color: #3a00d6 !important;
+  color: white !important;
+  border-top: 2px solid #904cff !important;
+  border-left: 2px solid #904cff !important;
+  border-right: 2px solid #e1e1e1 !important;
+  border-bottom: 2px solid #e1e1e1 !important;
 }
 
 /* Make the control buttons more distinctive and properly sized */
-[data-theme="daemon-os"] .window-controls {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    z-index: 50;
+[data-theme='daemon-os'] .window-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 50;
 }
 
 /* Target the buttons with both their inline classes and our added styling */
-[data-theme="daemon-os"] .window-controls button.title-bar-controls {
-    min-width: 22px;
-    width: 22px;
-    height: 22px;
-    padding: 0;
-    margin: 0 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 2px;
-    transition: background-color 0.1s ease;
+[data-theme='daemon-os'] .window-controls button.title-bar-controls {
+  min-width: 22px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  margin: 0 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  transition: background-color 0.1s ease;
 }
 
 /* Specific button colors */
-[data-theme="daemon-os"] .window-controls button[aria-label="Close"] {
-    background-color: #ff4c4c;
+[data-theme='daemon-os'] .window-controls button[aria-label='Close'] {
+  background-color: #ff4c4c;
 }
 
-[data-theme="daemon-os"] .window-controls button[aria-label="Minimize"] {
-    background-color: #d9d9d9;
+[data-theme='daemon-os'] .window-controls button[aria-label='Minimize'] {
+  background-color: #d9d9d9;
 }
 
-[data-theme="daemon-os"] .window-controls button[aria-label="Maximize"],
-[data-theme="daemon-os"] .window-controls button[aria-label="Restore"] {
-    background-color: #d9d9d9;
+[data-theme='daemon-os'] .window-controls button[aria-label='Maximize'],
+[data-theme='daemon-os'] .window-controls button[aria-label='Restore'] {
+  background-color: #d9d9d9;
 }
 
 /* Hover states */
-[data-theme="daemon-os"] .window-controls button[aria-label="Close"]:hover {
-    background-color: #ff6b6b;
+[data-theme='daemon-os'] .window-controls button[aria-label='Close']:hover {
+  background-color: #ff6b6b;
 }
 
-[data-theme="daemon-os"] .window-controls button[aria-label="Minimize"]:hover,
-[data-theme="daemon-os"] .window-controls button[aria-label="Maximize"]:hover,
-[data-theme="daemon-os"] .window-controls button[aria-label="Restore"]:hover {
-    background-color: #f0f0f0;
+[data-theme='daemon-os'] .window-controls button[aria-label='Minimize']:hover,
+[data-theme='daemon-os'] .window-controls button[aria-label='Maximize']:hover,
+[data-theme='daemon-os'] .window-controls button[aria-label='Restore']:hover {
+  background-color: #f0f0f0;
 }
 
 /* Icon colors and sizing */
-[data-theme="daemon-os"] .window-controls button svg {
-    width: 14px;
-    height: 14px;
+[data-theme='daemon-os'] .window-controls button svg {
+  width: 14px;
+  height: 14px;
 }
 
-[data-theme="daemon-os"] .window-controls button[aria-label="Close"] svg path {
-    fill: white !important;
+[data-theme='daemon-os'] .window-controls button[aria-label='Close'] svg path {
+  fill: white !important;
 }
 
-[data-theme="daemon-os"] .window-controls button[aria-label="Minimize"] svg path,
-[data-theme="daemon-os"] .window-controls button[aria-label="Maximize"] svg path,
-[data-theme="daemon-os"] .window-controls button[aria-label="Restore"] svg path {
-    fill: #4604ec !important;
+[data-theme='daemon-os'] .window-controls button[aria-label='Minimize'] svg path,
+[data-theme='daemon-os'] .window-controls button[aria-label='Maximize'] svg path,
+[data-theme='daemon-os'] .window-controls button[aria-label='Restore'] svg path {
+  fill: #4604ec !important;
 }
 
 /* Make the wallet button in taskbar fit its content */
 .taskbar-wallet-btn {
-    min-width: auto !important;
-    width: auto !important;
-    box-sizing: content-box !important;
-    height: 30px !important;
-    box-shadow: none !important;
-    border: none !important;
-    padding: 0 8px !important;
-    margin: 0 !important;
+  min-width: auto !important;
+  width: auto !important;
+  box-sizing: content-box !important;
+  height: 30px !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 8px !important;
+  margin: 0 !important;
 }
 
 /* Wallet selector disabled buttons */
 .window-body button[disabled]:not(.title-bar-controls) {
-    opacity: 0.6;
-    cursor: not-allowed;
-    color: var(--theme-text-disabled);
+  opacity: 0.6;
+  cursor: not-allowed;
+  color: var(--theme-text-disabled);
 }
 
-[data-theme="daemon-os"] .window-body button[disabled]:not(.title-bar-controls) {
-    background-color: #e1e1e1;
-    color: #8a8a8a;
-    border-top: 2px solid #e1e1e1;
-    border-left: 2px solid #e1e1e1;
-    border-right: 2px solid #c1c1c1;
-    border-bottom: 2px solid #c1c1c1;
+[data-theme='daemon-os'] .window-body button[disabled]:not(.title-bar-controls) {
+  background-color: #e1e1e1;
+  color: #8a8a8a;
+  border-top: 2px solid #e1e1e1;
+  border-left: 2px solid #e1e1e1;
+  border-right: 2px solid #c1c1c1;
+  border-bottom: 2px solid #c1c1c1;
 }
 
 /* Specific daemon-os theme styling for the wallet button */
-[data-theme="daemon-os"] .taskbar-wallet-btn {
-    background: transparent !important;
-    border: none !important;
-    height: 30px !important;
+[data-theme='daemon-os'] .taskbar-wallet-btn {
+  background: transparent !important;
+  border: none !important;
+  height: 30px !important;
 }
 
-[data-theme="daemon-os"] .taskbar-wallet-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2) !important;
+[data-theme='daemon-os'] .taskbar-wallet-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
 }
 
-[data-theme="daemon-os"] .taskbar-wallet-btn:active {
-    background-color: rgba(255, 255, 255, 0.3) !important;
+[data-theme='daemon-os'] .taskbar-wallet-btn:active {
+  background-color: rgba(255, 255, 255, 0.3) !important;
 }

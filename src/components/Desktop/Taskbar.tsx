@@ -1,6 +1,6 @@
 import { usePrograms } from '../ProgramWindow/programContext';
-import { createEffect, createSignal, onCleanup, onMount, untrack } from 'solid-js';
-import { WalletProvider } from '../Wallet/WalletContext';
+import { createEffect, createSignal, onCleanup, onMount, untrack, For } from 'solid-js';
+// import { WalletProvider } from '../Wallet/WalletContext'; // Unused for now
 import WalletApp from '../Wallet/WalletApp';
 
 export default function Taskbar() {
@@ -11,7 +11,7 @@ export default function Taskbar() {
     bringToFront,
     updateMinimizeTarget,
     registerProgram,
-    isRunning
+    isRunning,
   } = usePrograms();
   const [currentDateTime, setCurrentDateTime] = createSignal(new Date());
 
@@ -20,8 +20,9 @@ export default function Taskbar() {
   createEffect(() => {
     const programs = activePrograms;
     requestAnimationFrame(() => {
-      untrack(() => { // Don't make effect depend on individual program fields
-        programs.forEach(program => {
+      untrack(() => {
+        // Don't make effect depend on individual program fields
+        programs.forEach((program) => {
           const buttonRef = taskbarButtonRefs.get(program.id);
           if (buttonRef) {
             const rect = buttonRef.getBoundingClientRect();
@@ -40,18 +41,16 @@ export default function Taskbar() {
     });
   });
 
-
   function handleTaskbarProgramClick(programId: string) {
-    const program = activePrograms.find(p => p.id === programId);
+    const program = activePrograms.find((p) => p.id === programId);
     if (!program) return;
 
     if (program.isMinimized) {
       restoreProgram(programId);
     } else {
-
       // Find the highest zIndex among non-minimized windows
       const maxZIndex = activePrograms
-        .filter(p => !p.isMinimized)
+        .filter((p) => !p.isMinimized)
         .reduce((max, p) => Math.max(max, p.zIndex), 0);
 
       if (program.zIndex === maxZIndex) {
@@ -67,7 +66,7 @@ export default function Taskbar() {
   const handleWalletClick = () => {
     const walletLabel = 'Wallet';
     if (isRunning(walletLabel)) {
-      const walletProgram = activePrograms.find(p => p.label === walletLabel);
+      const walletProgram = activePrograms.find((p) => p.label === walletLabel);
       if (walletProgram) {
         handleTaskbarProgramClick(walletProgram.id);
       }
@@ -93,9 +92,8 @@ export default function Taskbar() {
   };
 
   // Example "3/11/2025"
-  const formatDate = (date: Date) => {
-    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-  };
+  const formatDate = (date: Date) =>
+    `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 
   // Update the time every minute
   onMount(() => {
@@ -109,31 +107,27 @@ export default function Taskbar() {
   });
 
   return (
-    <div class='window w-full fixed bottom-0 left-0 z-50' id='taskbar'>
-      <div class='my-2 p-1 h-6 flex justify-between items-center'>
+    <div class="window w-full fixed bottom-0 left-0 z-50" id="taskbar">
+      <div class="my-2 p-1 h-6 flex justify-between items-center">
         {/* Programs section - left side */}
         <div class="flex gap-1 items-center overflow-x-auto">
-          {activePrograms.map((program) => (
-            <button
-              class={`
-                px-2 py-1 
-                min-w-[120px] 
-                flex items-center gap-2 
-                hover:bg-gray-200 
+          <For each={activePrograms}>
+            {(program) => (
+              <button
+                class={`
+                px-2 py-1
+                min-w-[120px]
+                flex items-center gap-2
+                hover:bg-gray-200
                 ${program.isMinimized ? 'bg-gray-100' : ''}
               `}
-              onClick={() => handleTaskbarProgramClick(program.id)}
-            >
-              <img
-                src={program.iconPath}
-                alt=""
-                class="w-6 h-6"
-              />
-              <span class="truncate text-sm">
-                {program.label}
-              </span>
-            </button>
-          ))}
+                onClick={() => handleTaskbarProgramClick(program.id)}
+              >
+                <img src={program.iconPath} alt="" class="w-6 h-6" />
+                <span class="truncate text-sm">{program.label}</span>
+              </button>
+            )}
+          </For>
         </div>
 
         {/* System tray - right side */}
@@ -144,11 +138,7 @@ export default function Taskbar() {
             title="Open Wallet"
             onClick={handleWalletClick}
           >
-            <img
-              src="/icons/wallet.avif"
-              alt="Wallet"
-              class="w-8 h-8"
-            />
+            <img src="/icons/wallet.avif" alt="Wallet" class="w-8 h-8" />
           </button>
 
           {/* Date & Time */}
