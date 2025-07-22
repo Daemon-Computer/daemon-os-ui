@@ -6,6 +6,7 @@ import StatsList from './StatsList';
 import { useWallet } from './Wallet/WalletContext';
 import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
 import { PROGRAM_TYPE_STRING, WASM_ENGINE_URL, WASM_BINDINGS_URL } from '../api/constants';
+import ArrowPath from './Icons/ArrowPath';
 
 // Enum to match Rust-side ProgramPartName for WASM
 enum ProgramPartName {
@@ -1034,30 +1035,98 @@ export default function ProgramDatabase() {
 
   return (
     <div class="flex w-full h-full pt-2 overflow-hidden">
-      {/* Left panel - Program viewer and details */}
-      <div class="w-2/5 window m-2 min-w-0 overflow-hidden">
-        <div class="flex flex-col h-full p-2 overflow-hidden">
-          <div class="flex-1 flex mb-2 mr-[1px] overflow-hidden">
-            <Show when={!webGPUSupported()}>
-              <div class="p-4 text-center text-red-500 border border-red-500 flex-1 flex items-center justify-center">
-                <div>
-                  <p>WebGPU Not Supported</p>
-                  <p class="mt-2 text-sm">
-                    Please use a recent version of Chrome, Edge, or enable flags in Firefox.
-                  </p>
-                </div>
+      <div class="grid grid-cols-3 w-full">
+        {/* Left panel - Program list */}
+        <div class="flex flex-col ml-1 mr-2 min-w-0 overflow-hidden">
+          <div class="flex justify-between items-center mb-2 pr-1">
+            <button
+              onClick={fetchProgramsFromWallet}
+              disabled={isLoading() || !walletState.isConnected}
+              class="text-xs px-2 py-1"
+            >
+              <ArrowPath class="w-4 h-4" />
+            </button>
+            <span class="font-bold truncate">Available DAE-MON/S ({programs().length})</span>
+          </div>
+
+          <Show when={error()}>
+            <div class="p-2 text-center text-sm text-red-600 bg-red-100 border border-red-300 mb-2 overflow-hidden text-ellipsis">
+              Error loading programs: {error()}
+            </div>
+          </Show>
+
+          <div class="overflow-y-auto overflow-x-hidden p-1">
+            <Show when={isLoading() && programs().length === 0}>
+              <div class="p-4 text-center text-sm italic">Loading DAE-MONs from wallet...</div>
+            </Show>
+            <Show when={!isLoading() && programs().length === 0 && walletState.isConnected}>
+              <div class="p-4 text-center text-sm italic overflow-hidden">
+                No DAE-MONs found in your wallet for type{' '}
+                <code class="text-xs bg-gray-200 p-0.5 rounded break-all">
+                  {PROGRAM_TYPE_STRING}
+                </code>
+                .
+                <br /> Mint one in 'Drives & Programs'.
               </div>
             </Show>
-            <Show when={webGPUSupported()}>
-              <WasmIframeWrapper
-                instanceId="db-viewer-frame"
-                jsPath={WASM_BINDINGS_URL}
-                wasmPath={WASM_ENGINE_URL}
-                onReady={handleViewerReady}
-              />
+            <Show when={!walletState.isConnected && !isLoading()}>
+              <div class="p-4 text-center text-sm italic">
+                Connect your wallet to see your DAE-MONs.
+              </div>
             </Show>
+
+            <For each={programs()}>
+              {(program) => (
+                <div class="mb-1 cursor-pointer" onClick={() => handleProgramSelect(program)}>
+                  <button
+                    class="w-full font-bold justify-between p-2 flex items-center gap-2 text-sm"
+                    classList={{ active: selectedProgram()?.id === program.id }}
+                  >
+                    <div class="w-32 truncate text-left" title={program.name}>
+                      {program.name}
+                    </div>
+                    <div class="progress-indicator segmented w-[70%]">
+                      <span
+                        class="progress-corruption-bar"
+                        style={{ width: `${program.corruption}%` }}
+                      />
+                    </div>
+                  </button>
+                </div>
+              )}
+            </For>
           </div>
-          <div class="overflow-hidden">
+        </div>
+
+        {/* Middle panel - Program viewer */}
+        <div class="window m-2 min-w-0 overflow-hidden">
+          <div class="flex flex-col h-full p-2 overflow-hidden">
+            <div class="flex-1 flex mb-2 mr-[1px] overflow-hidden">
+              <Show when={!webGPUSupported()}>
+                <div class="p-4 text-center text-red-500 border border-red-500 flex-1 flex items-center justify-center">
+                  <div>
+                    <p>WebGPU Not Supported</p>
+                    <p class="mt-2 text-sm">
+                      Please use a recent version of Chrome, Edge, or enable flags in Firefox.
+                    </p>
+                  </div>
+                </div>
+              </Show>
+              <Show when={webGPUSupported()}>
+                <WasmIframeWrapper
+                  instanceId="db-viewer-frame"
+                  jsPath={WASM_BINDINGS_URL}
+                  wasmPath={WASM_ENGINE_URL}
+                  onReady={handleViewerReady}
+                />
+              </Show>
+            </div>
+          </div>
+        </div>
+
+        {/* Right panel - Details */}
+        <div class="flex items-center">
+          <div class="flex-col mx-2 w-full">
             <div class="flex justify-between status-bar-field px-2 items-center">
               <div class="font-bold ml-2 truncate" title={displayData().name}>
                 {displayData().name}
@@ -1079,14 +1148,6 @@ export default function ProgramDatabase() {
                 <div class="flex justify-between text-yellow-600 mt-2">
                   <div>Render Status</div>
                   <div class="truncate">WebGPU Issue</div>
-                </div>
-              </Show>
-              <Show when={selectedProgram() && selectedProgram()?.rawFields?.parts}>
-                <div class="flex justify-between text-blue-600 mt-2">
-                  <div>3D Model</div>
-                  <div class="truncate">
-                    Legacy Parts ({selectedProgram()?.rawFields?.parts?.length || 0})
-                  </div>
                 </div>
               </Show>
             </div>
@@ -1122,66 +1183,6 @@ export default function ProgramDatabase() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Right panel - Program list */}
-      <div class="w-3/5 flex flex-col ml-1 mr-2 min-w-0 overflow-hidden">
-        <div class="flex justify-between items-center mb-2 pr-1">
-          <button
-            onClick={fetchProgramsFromWallet}
-            disabled={isLoading() || !walletState.isConnected}
-            class="text-xs px-2 py-1"
-          >
-            {isLoading() ? 'Refreshing...' : 'Refresh List'}
-          </button>
-          <span class="font-bold truncate">Available DAE-MON/S ({programs().length})</span>
-        </div>
-
-        <Show when={error()}>
-          <div class="p-2 text-center text-sm text-red-600 bg-red-100 border border-red-300 mb-2 overflow-hidden text-ellipsis">
-            Error loading programs: {error()}
-          </div>
-        </Show>
-
-        <div class="overflow-y-auto overflow-x-hidden p-1">
-          <Show when={isLoading() && programs().length === 0}>
-            <div class="p-4 text-center text-sm italic">Loading DAE-MONs from wallet...</div>
-          </Show>
-          <Show when={!isLoading() && programs().length === 0 && walletState.isConnected}>
-            <div class="p-4 text-center text-sm italic overflow-hidden">
-              No DAE-MONs found in your wallet for type{' '}
-              <code class="text-xs bg-gray-200 p-0.5 rounded break-all">{PROGRAM_TYPE_STRING}</code>
-              .
-              <br /> Mint one in 'Drives & Programs'.
-            </div>
-          </Show>
-          <Show when={!walletState.isConnected && !isLoading()}>
-            <div class="p-4 text-center text-sm italic">
-              Connect your wallet to see your DAE-MONs.
-            </div>
-          </Show>
-
-          <For each={programs()}>
-            {(program) => (
-              <div class="mb-1 cursor-pointer" onClick={() => handleProgramSelect(program)}>
-                <button
-                  class="w-full font-bold justify-between p-2 flex items-center gap-2 text-sm"
-                  classList={{ active: selectedProgram()?.id === program.id }}
-                >
-                  <div class="w-32 truncate text-left" title={program.name}>
-                    {program.name}
-                  </div>
-                  <div class="progress-indicator segmented w-full">
-                    <span
-                      class="progress-corruption-bar"
-                      style={{ width: `${program.corruption}%` }}
-                    />
-                  </div>
-                </button>
-              </div>
-            )}
-          </For>
         </div>
       </div>
     </div>
