@@ -1035,9 +1035,9 @@ export default function ProgramDatabase() {
 
   return (
     <div class="flex w-full h-full pt-2 overflow-hidden">
-      <div class="grid grid-cols-3 w-full">
+      <div class="flex w-full">
         {/* Left panel - Program list */}
-        <div class="flex flex-col ml-1 mr-2 min-w-0 overflow-hidden">
+        <div class="w-[33%] flex flex-col ml-1 mr-2 min-w-0 overflow-hidden">
           <div class="flex justify-between items-center mb-2 pr-1">
             <button
               onClick={fetchProgramsFromWallet}
@@ -1085,12 +1085,6 @@ export default function ProgramDatabase() {
                     <div class="w-32 truncate text-left" title={program.name}>
                       {program.name}
                     </div>
-                    <div class="progress-indicator segmented w-[70%]">
-                      <span
-                        class="progress-corruption-bar"
-                        style={{ width: `${program.corruption}%` }}
-                      />
-                    </div>
                   </button>
                 </div>
               )}
@@ -1098,86 +1092,96 @@ export default function ProgramDatabase() {
           </div>
         </div>
 
-        {/* Middle panel - Program viewer */}
-        <div class="window m-2 min-w-0 overflow-hidden">
-          <div class="flex flex-col h-full p-2 overflow-hidden">
-            <div class="flex-1 flex mb-2 mr-[1px] overflow-hidden">
-              <Show when={!webGPUSupported()}>
-                <div class="p-4 text-center text-red-500 border border-red-500 flex-1 flex items-center justify-center">
-                  <div>
-                    <p>WebGPU Not Supported</p>
-                    <p class="mt-2 text-sm">
-                      Please use a recent version of Chrome, Edge, or enable flags in Firefox.
-                    </p>
+        <div class="flex window w-full m-2">
+          {/* Middle panel - Program viewer */}
+          <div class="m-2 min-w-0 overflow-hidden">
+            <div class="flex flex-col h-full p-2 overflow-hidden">
+              <div class="flex-1 flex mb-2 mr-[1px] overflow-hidden">
+                <Show when={!webGPUSupported()}>
+                  <div class="p-4 text-center text-red-500 border border-red-500 flex-1 flex items-center justify-center">
+                    <div>
+                      <p>WebGPU Not Supported</p>
+                      <p class="mt-2 text-sm">
+                        Please use a recent version of Chrome, Edge, or enable flags in Firefox.
+                      </p>
+                    </div>
                   </div>
+                </Show>
+                <Show when={webGPUSupported()}>
+                  <WasmIframeWrapper
+                    instanceId="db-viewer-frame"
+                    jsPath={WASM_BINDINGS_URL}
+                    wasmPath={WASM_ENGINE_URL}
+                    onReady={handleViewerReady}
+                  />
+                </Show>
+              </div>
+              <div class="grid grid-cols-2 w-full">
+                <img src="/icons/remi.avif" class="w-64 h-64" />
+                <div class="flex justify-center items-center">
+                  <span class="text-3xl font-mono font-bold italic">
+                    {Math.random().toFixed(3)}%
+                  </span>
                 </div>
-              </Show>
-              <Show when={webGPUSupported()}>
-                <WasmIframeWrapper
-                  instanceId="db-viewer-frame"
-                  jsPath={WASM_BINDINGS_URL}
-                  wasmPath={WASM_ENGINE_URL}
-                  onReady={handleViewerReady}
-                />
-              </Show>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Right panel - Details */}
-        <div class="flex items-center">
-          <div class="flex-col mx-2 w-full">
-            <div class="flex justify-between status-bar-field px-2 items-center">
-              <div class="font-bold ml-2 truncate" title={displayData().name}>
-                {displayData().name}
-              </div>
-              <div class="flex gap-2 text-gray-500 mr-2 text-xs truncate">
-                Decrypted: <p class="italic truncate">{displayData().mintDate}</p>
-              </div>
-            </div>
-            <div class="mt-4 text-sm">
-              <div class="flex justify-between">
-                <div>Source</div>
-                <div class="truncate">{displayData().source}</div>
-              </div>
-              <div class="flex justify-between">
-                <div>Type</div>
-                <div class="truncate">{displayData().type}</div>
-              </div>
-              <Show when={webGPUError()}>
-                <div class="flex justify-between text-yellow-600 mt-2">
-                  <div>Render Status</div>
-                  <div class="truncate">WebGPU Issue</div>
+          {/* Right panel - Details */}
+          <div class="flex items-center">
+            <div class="flex-col mx-2 w-full">
+              <div class="flex justify-between status-bar-field px-2 items-center">
+                <div class="font-bold ml-2 truncate" title={displayData().name}>
+                  {displayData().name}
                 </div>
-              </Show>
-            </div>
-            <div class="mt-4">
-              <div class="flex text-sm">
-                <div class="w-1/2 pr-1 overflow-hidden">
-                  <StatsList program={displayData()} />
+                <div class="flex gap-2 text-gray-500 mr-2 text-xs truncate">
+                  Decrypted: <p class="italic truncate">{displayData().mintDate}</p>
                 </div>
-                <div class="w-1/2 overflow-hidden">
-                  <div class="font-bold mb-1 text-right">Attacks</div>
-                  <div class="flex-col h-full text-right">
-                    <Show
-                      when={
-                        selectedProgram() &&
-                        displayData().name !== DEFAULT_PROGRAM_DATA_PLACEHOLDER.name
-                      }
-                      fallback={
-                        <>
-                          <div class="status-bar-field">-</div>{' '}
-                          <div class="status-bar-field">-</div>
-                          <div class="status-bar-field">-</div>{' '}
-                          <div class="status-bar-field">-</div>
-                        </>
-                      }
-                    >
-                      <div class="status-bar-field">Slash</div>{' '}
-                      <div class="status-bar-field">Bite</div>
-                      <div class="status-bar-field">Roar</div>{' '}
-                      <div class="status-bar-field">Hide</div>
-                    </Show>
+              </div>
+              <div class="mt-4 text-sm">
+                <div class="flex justify-between">
+                  <div>Source</div>
+                  <div class="truncate">{displayData().source}</div>
+                </div>
+                <div class="flex justify-between">
+                  <div>Type</div>
+                  <div class="truncate">{displayData().type}</div>
+                </div>
+                <Show when={webGPUError()}>
+                  <div class="flex justify-between text-yellow-600 mt-2">
+                    <div>Render Status</div>
+                    <div class="truncate">WebGPU Issue</div>
+                  </div>
+                </Show>
+              </div>
+              <div class="mt-4">
+                <div class="flex text-sm">
+                  <div class="w-1/2 pr-1 overflow-hidden">
+                    <StatsList program={displayData()} />
+                  </div>
+                  <div class="w-1/2 overflow-hidden">
+                    <div class="font-bold mb-1 text-right">Attacks</div>
+                    <div class="flex-col h-full text-right">
+                      <Show
+                        when={
+                          selectedProgram() &&
+                          displayData().name !== DEFAULT_PROGRAM_DATA_PLACEHOLDER.name
+                        }
+                        fallback={
+                          <>
+                            <div class="status-bar-field">-</div>{' '}
+                            <div class="status-bar-field">-</div>
+                            <div class="status-bar-field">-</div>{' '}
+                            <div class="status-bar-field">-</div>
+                          </>
+                        }
+                      >
+                        <div class="status-bar-field">Slash</div>{' '}
+                        <div class="status-bar-field">Bite</div>
+                        <div class="status-bar-field">Roar</div>{' '}
+                        <div class="status-bar-field">Hide</div>
+                      </Show>
+                    </div>
                   </div>
                 </div>
               </div>
