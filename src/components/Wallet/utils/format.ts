@@ -5,10 +5,10 @@
  * @returns Truncated address with ellipsis in the middle
  */
 export function truncateAddress(address: string, chars: number = 4): string {
-    if (!address) return '';
-    if (address.length <= chars * 2) return address;
+  if (!address) return '';
+  if (address.length <= chars * 2) return address;
 
-    return `${address.slice(0, chars)}...${address.slice(-chars)}`;
+  return `${address.slice(0, chars)}...${address.slice(-chars)}`;
 }
 
 /**
@@ -18,9 +18,9 @@ export function truncateAddress(address: string, chars: number = 4): string {
  * @returns Formatted number string
  */
 export function formatNumber(value: number | string, decimals: number = 2): string {
-    const num = typeof value === 'string' ? parseFloat(value) : value;
-    return num.toLocaleString(undefined, {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals
-    });
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  return num.toLocaleString(undefined, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
 }

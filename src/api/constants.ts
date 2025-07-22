@@ -16,4 +16,8 @@ export const DISTRIBUTION_TABLE_OBJECT_ID = "0x8c74a0c8b828ef4c37909cee2c8c2e127
 export const DRIVE_MINTER_OBJECT_ID = "0x47a194a52f050829863fdfb3114bd93cfbd2ec11a1a995453aff6b8ef9564abf";
 
 // Derived constant for program type string, often used in filters
-export const PROGRAM_TYPE_STRING = `${DAEMON_PACKAGE_ID}::monster::Monster`; 
+export const PROGRAM_TYPE_STRING = `${DAEMON_PACKAGE_ID}::monster::Monster`;
+
+// WASM Configuration
+export const WASM_ENGINE_URL = import.meta.env.VITE_WASM_ENGINE_URL;
+export const WASM_BINDINGS_URL = import.meta.env.VITE_WASM_BINDINGS_URL; 

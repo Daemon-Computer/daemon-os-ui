@@ -1,6 +1,7 @@
 # Daemon Operating System Page
 
 This website is built using the following technologies:
+
 1. SolidJS
 2. TailwindCSS
 3. Typescript
@@ -69,13 +70,11 @@ The `dist` folder contains all the front end files that are necessary to deploy 
 If you encounter problems, here are some common solutions:
 
 1. **Command not executing:**
-
    - Verify you're in the correct directory
    - Run `bun install` again
    - Confirm bun is installed with `bun --version`
 
 2. **Changes not reflecting:**
-
    - Ensure the development server is running
    - Check the terminal for error messages
    - Try refreshing the browser
