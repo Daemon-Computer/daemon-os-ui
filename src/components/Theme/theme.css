@@ -570,3 +570,8 @@ body,
 [data-theme='daemon-os'] .taskbar-wallet-btn:active {
   background-color: rgba(255, 255, 255, 0.3) !important;
 }
+
+/* Dynamic window background for 3D model synchronization */
+[data-theme='daemon-os'] .dynamic-window-bg {
+  background-color: var(--dynamic-window-bg) !important;
+}

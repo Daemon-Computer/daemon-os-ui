@@ -217,8 +217,8 @@ function mapPartNameToEnum(name: string): ProgramPartName {
 const DEFAULT_PROGRAM_VIEW_MODEL: ViewModel = {
   palette: {
     primary: [128, 128, 128],
-    secondary: [100, 100, 100],
-    tertiary: [80, 80, 80],
+    neutral: [100, 100, 100],
+    background: [180, 120, 180],
     highlight: [200, 200, 200],
     accent: [150, 150, 150],
   },
@@ -366,8 +366,8 @@ function transformSuiPaletteToViewModelPalette(
 ): ViewModelPalette {
   const defaultViewModelPalette: ViewModelPalette = {
     primary: [128, 128, 128],
-    secondary: [100, 100, 100],
-    tertiary: [80, 80, 80],
+    neutral: [100, 100, 100],
+    background: [80, 80, 80],
     highlight: [200, 200, 200],
     accent: [150, 150, 150],
   };
@@ -402,12 +402,12 @@ function transformSuiPaletteToViewModelPalette(
       scale(primaryColorFields.saturation),
       scale(primaryColorFields.value),
     ),
-    secondary: hsvToRgb(
+    neutral: hsvToRgb(
       scaleHue(neutralColorFields.hue),
       scale(neutralColorFields.saturation),
       scale(neutralColorFields.value),
     ),
-    tertiary: hsvToRgb(
+    background: hsvToRgb(
       scaleHue(backgroundColorFields.hue),
       scale(backgroundColorFields.saturation),
       scale(backgroundColorFields.value),
@@ -924,6 +924,17 @@ export default function ProgramDatabase() {
           parts: partsToUse,
         };
 
+        // Extract background color from the palette that's being sent to WASM
+        if (paletteToUse?.background) {
+          const bgColor = paletteToUse.background;
+          const [r, g, b] = hsvToRgb(
+            bgColor.hue / 360,
+            bgColor.saturation / 255,
+            bgColor.value / 255,
+          );
+          setWindowBackgroundColor(`rgb(${r}, ${g}, ${b})`);
+        }
+
         console.log(
           `Sending data to WASM for program ${programId}:`,
           JSON.stringify(programBuilder, null, 2),
@@ -950,6 +961,16 @@ export default function ProgramDatabase() {
           palette: DEFAULT_MINI_PALETTE,
           parts: DEFAULT_PARTS,
         };
+
+        // Set fallback background color
+        const defaultBg = DEFAULT_MINI_PALETTE.background;
+        const [r, g, b] = hsvToRgb(
+          defaultBg.hue / 360,
+          defaultBg.saturation / 255,
+          defaultBg.value / 255,
+        );
+        setWindowBackgroundColor(`rgb(${r}, ${g}, ${b})`);
+
         bridge.queueEventForWasm({ ViewModel: fallbackProgramBuilder as any });
       }
     }
@@ -1023,6 +1044,17 @@ export default function ProgramDatabase() {
     ];
   }
 
+  // Store the background color from the WASM palette data
+  // Calculate default background color from DEFAULT_MINI_PALETTE to match default model
+  const defaultBg = DEFAULT_MINI_PALETTE.background;
+  const [defaultR, defaultG, defaultB] = hsvToRgb(
+    defaultBg.hue / 360,
+    defaultBg.saturation / 255,
+    defaultBg.value / 255,
+  );
+  const [windowBackgroundColor, setWindowBackgroundColor] =
+    createSignal<string>(`rgb(${defaultR}, ${defaultG}, ${defaultB})`);
+
   // Remove unused debug functions
   createEffect(() => {
     const currentPrograms = programs();
@@ -1092,7 +1124,10 @@ export default function ProgramDatabase() {
           </div>
         </div>
 
-        <div class="flex window w-full m-2">
+        <div
+          class="flex window w-full m-2 dynamic-window-bg"
+          style={{ '--dynamic-window-bg': windowBackgroundColor() }}
+        >
           {/* Middle panel - Program viewer */}
           <div class="m-2 min-w-0 overflow-hidden">
             <div class="flex flex-col h-full p-2 overflow-hidden">
