@@ -3,6 +3,7 @@ import WasmIframeWrapper from './WasmIframeWrapper';
 import type { WasmCanvasBridgeInterface } from './hooks/createWasmCanvas';
 import type { EventPayload, ViewModel, ViewModelPalette, ViewModelAddon } from '../api/game/events';
 import StatsList from './StatsList';
+import RetroGameCard from './RetroGameCard';
 import { useWallet } from './Wallet/WalletContext';
 import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
 import { PROGRAM_TYPE_STRING, WASM_ENGINE_URL, WASM_BINDINGS_URL } from '../api/constants';
@@ -1033,156 +1034,376 @@ export default function ProgramDatabase() {
   });
 
   return (
-    <div class="flex w-full h-full pt-2 overflow-hidden">
-      {/* Left panel - Program viewer and details */}
-      <div class="w-2/5 window m-2 min-w-0 overflow-hidden">
-        <div class="flex flex-col h-full p-2 overflow-hidden">
-          <div class="flex-1 flex mb-2 mr-[1px] overflow-hidden">
-            <Show when={!webGPUSupported()}>
-              <div class="p-4 text-center text-red-500 border border-red-500 flex-1 flex items-center justify-center">
-                <div>
+    <div
+      style={{
+        color: '#ffffff',
+        'font-family': "'Pixelated MS Sans Serif', monospace",
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        'flex-direction': 'column',
+        border: '2px solid #ffffff',
+        'box-sizing': 'border-box',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Main content area - retro game interface */}
+      <div
+        style={{
+          flex: '1',
+          display: 'flex',
+          padding: '16px',
+          gap: '16px',
+          'min-height': '0',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Left side - Character portrait and program selector */}
+        <div
+          style={{
+            width: '300px',
+            display: 'flex',
+            'flex-direction': 'column',
+            gap: '16px',
+            'flex-shrink': '0',
+          }}
+        >
+          {/* BEFORE section - character portrait */}
+          <div
+            style={{
+              border: '2px solid #ffffff',
+              'flex-shrink': '0',
+            }}
+          >
+            <div
+              style={{
+                'border-bottom': '2px solid #ffffff',
+                padding: '8px',
+                'text-align': 'center',
+                'font-weight': 'bold',
+                'font-size': '14px',
+              }}
+            >
+              BEFORE
+            </div>
+            <div
+              style={{
+                height: '300px',
+                'background-color': '#ffffff',
+                display: 'flex',
+                'align-items': 'center',
+                'justify-content': 'center',
+                position: 'relative',
+              }}
+            >
+              <Show
+                when={!webGPUSupported()}
+                fallback={
+                  <Show when={webGPUSupported()}>
+                    <div style={{ width: '100%', height: '100%' }}>
+                      <WasmIframeWrapper
+                        instanceId="db-viewer-frame"
+                        jsPath={WASM_BINDINGS_URL}
+                        wasmPath={WASM_ENGINE_URL}
+                        onReady={handleViewerReady}
+                      />
+                    </div>
+                  </Show>
+                }
+              >
+                <div style={{ color: '#000000', 'font-size': '12px', 'text-align': 'center' }}>
                   <p>WebGPU Not Supported</p>
-                  <p class="mt-2 text-sm">
-                    Please use a recent version of Chrome, Edge, or enable flags in Firefox.
+                  <p style={{ 'margin-top': '4px', 'font-size': '10px' }}>
+                    Use Chrome/Edge or enable flags
                   </p>
                 </div>
+              </Show>
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '8px',
+                  left: '8px',
+                  color: '#000000',
+                  'font-size': '10px',
+                }}
+              >
+                ©2024 GODCONTROL
               </div>
-            </Show>
-            <Show when={webGPUSupported()}>
-              <WasmIframeWrapper
-                instanceId="db-viewer-frame"
-                jsPath={WASM_BINDINGS_URL}
-                wasmPath={WASM_ENGINE_URL}
-                onReady={handleViewerReady}
-              />
-            </Show>
+            </div>
           </div>
-          <div class="overflow-hidden">
-            <div class="flex justify-between status-bar-field px-2 items-center">
-              <div class="font-bold ml-2 truncate" title={displayData().name}>
-                {displayData().name}
-              </div>
-              <div class="flex gap-2 text-gray-500 mr-2 text-xs truncate">
-                Decrypted: <p class="italic truncate">{displayData().mintDate}</p>
-              </div>
+
+          {/* Program selector */}
+          <div
+            style={{
+              border: '2px solid #ffffff',
+              padding: '8px',
+              flex: '1',
+              'min-height': '0',
+            }}
+          >
+            <div
+              style={{
+                'margin-bottom': '8px',
+                display: 'flex',
+                'justify-content': 'space-between',
+                'align-items': 'center',
+              }}
+            >
+              <span style={{ 'font-size': '12px', 'font-weight': 'bold' }}>
+                Available DAE-MON/S ({programs().length})
+              </span>
+              <button
+                onClick={fetchProgramsFromWallet}
+                disabled={isLoading() || !walletState.isConnected}
+                style={{
+                  'background-color': 'transparent',
+                  border: '1px solid #ffffff',
+                  color: '#ffffff',
+                  padding: '2px 6px',
+                  'font-size': '10px',
+                  cursor: 'pointer',
+                }}
+                title="Refresh Program List"
+              >
+                {isLoading() ? '⟳' : '⟲'}
+              </button>
             </div>
-            <div class="mt-4 text-sm">
-              <div class="flex justify-between">
-                <div>Source</div>
-                <div class="truncate">{displayData().source}</div>
+
+            <Show when={error()}>
+              <div
+                style={{
+                  padding: '4px',
+                  'text-align': 'center',
+                  'font-size': '10px',
+                  color: '#ff6666',
+                  border: '1px solid #ff6666',
+                  'margin-bottom': '8px',
+                }}
+              >
+                Error: {error()}
               </div>
-              <div class="flex justify-between">
-                <div>Type</div>
-                <div class="truncate">{displayData().type}</div>
-              </div>
-              <Show when={webGPUError()}>
-                <div class="flex justify-between text-yellow-600 mt-2">
-                  <div>Render Status</div>
-                  <div class="truncate">WebGPU Issue</div>
+            </Show>
+
+            <div
+              style={{
+                flex: '1',
+                'overflow-y': 'auto',
+                border: '1px solid #ffffff',
+              }}
+            >
+              <Show when={isLoading() && programs().length === 0}>
+                <div style={{ padding: '8px', 'text-align': 'center', 'font-size': '10px' }}>
+                  Loading DAE-MONs...
                 </div>
               </Show>
-              <Show when={selectedProgram() && selectedProgram()?.rawFields?.parts}>
-                <div class="flex justify-between text-blue-600 mt-2">
-                  <div>3D Model</div>
-                  <div class="truncate">
-                    Legacy Parts ({selectedProgram()?.rawFields?.parts?.length || 0})
-                  </div>
+              <Show when={!isLoading() && programs().length === 0 && walletState.isConnected}>
+                <div style={{ padding: '8px', 'text-align': 'center', 'font-size': '10px' }}>
+                  No DAE-MONs found. Mint one in 'Drives & Programs'.
                 </div>
               </Show>
-            </div>
-            <div class="mt-4">
-              <div class="flex text-sm">
-                <div class="w-1/2 pr-1 overflow-hidden">
-                  <StatsList program={displayData()} />
+              <Show when={!walletState.isConnected && !isLoading()}>
+                <div style={{ padding: '8px', 'text-align': 'center', 'font-size': '10px' }}>
+                  Connect wallet to see DAE-MONs.
                 </div>
-                <div class="w-1/2 overflow-hidden">
-                  <div class="font-bold mb-1 text-right">Attacks</div>
-                  <div class="flex-col h-full text-right">
-                    <Show
-                      when={
-                        selectedProgram() &&
-                        displayData().name !== DEFAULT_PROGRAM_DATA_PLACEHOLDER.name
-                      }
-                      fallback={
-                        <>
-                          <div class="status-bar-field">-</div>{' '}
-                          <div class="status-bar-field">-</div>
-                          <div class="status-bar-field">-</div>{' '}
-                          <div class="status-bar-field">-</div>
-                        </>
-                      }
-                    >
-                      <div class="status-bar-field">Slash</div>{' '}
-                      <div class="status-bar-field">Bite</div>
-                      <div class="status-bar-field">Roar</div>{' '}
-                      <div class="status-bar-field">Hide</div>
-                    </Show>
+              </Show>
+
+              <For
+                each={(() => {
+                  const allPrograms = programs();
+                  const selected = selectedProgram();
+                  if (!selected) return allPrograms;
+
+                  // Move selected program to the front
+                  const filtered = allPrograms.filter((p) => p.id !== selected.id);
+                  return [selected, ...filtered];
+                })()}
+              >
+                {(program) => (
+                  <div
+                    style={{
+                      padding: '4px 8px',
+                      cursor: 'pointer',
+                      'background-color':
+                        selectedProgram()?.id === program.id ? '#ffff00' : 'transparent',
+                      color: selectedProgram()?.id === program.id ? '#000000' : '#ffffff',
+                      'border-bottom': '1px solid #666666',
+                      'font-size': '11px',
+                      'font-weight': selectedProgram()?.id === program.id ? 'bold' : 'normal',
+                    }}
+                    onClick={() => handleProgramSelect(program)}
+                  >
+                    {program.name}
                   </div>
-                </div>
-              </div>
+                )}
+              </For>
             </div>
+          </div>
+        </div>
+
+        {/* Center - Stats section */}
+        <div
+          style={{
+            flex: '1',
+            border: '2px solid #ffffff',
+            'min-width': '0',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              'border-bottom': '2px solid #ffffff',
+              padding: '8px',
+              'text-align': 'center',
+              'font-weight': 'bold',
+              'font-size': '14px',
+            }}
+          >
+            STATS
+          </div>
+          <div
+            style={{
+              padding: '16px',
+              display: 'flex',
+              'flex-direction': 'column',
+              gap: '16px',
+              height: 'calc(100% - 50px)',
+              overflow: 'hidden',
+            }}
+          >
+            <RetroGameCard program={selectedProgram()} canvasElement={null} />
+          </div>
+        </div>
+
+        {/* Right side - PERKS */}
+        <div
+          style={{
+            width: '120px',
+            border: '2px solid #ffffff',
+            'flex-shrink': '0',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              'border-bottom': '2px solid #ffffff',
+              padding: '8px',
+              'text-align': 'center',
+              'font-weight': 'bold',
+              'font-size': '14px',
+            }}
+          >
+            PERKS
+          </div>
+          <div
+            style={{
+              padding: '16px',
+              display: 'flex',
+              'flex-direction': 'column',
+              'align-items': 'center',
+              gap: '8px',
+            }}
+          >
+            <div
+              style={{
+                width: '32px',
+                height: '32px',
+                border: '2px solid #ffffff',
+              }}
+            />
+            <div
+              style={{
+                width: '32px',
+                height: '32px',
+                border: '2px solid #ffffff',
+              }}
+            />
+            <div
+              style={{
+                width: '24px',
+                height: '24px',
+                border: '2px solid #ffffff',
+                display: 'flex',
+                'align-items': 'center',
+                'justify-content': 'center',
+                'font-size': '12px',
+              }}
+            >
+              💀
+            </div>
+            <div
+              style={{
+                width: '32px',
+                height: '32px',
+                border: '2px solid #ffffff',
+              }}
+            />
           </div>
         </div>
       </div>
 
-      {/* Right panel - Program list */}
-      <div class="w-3/5 flex flex-col ml-1 mr-2 min-w-0 overflow-hidden">
-        <div class="flex justify-between items-center mb-2 pr-1">
-          <button
-            onClick={fetchProgramsFromWallet}
-            disabled={isLoading() || !walletState.isConnected}
-            class="text-xs px-2 py-1"
-          >
-            {isLoading() ? 'Refreshing...' : 'Refresh List'}
-          </button>
-          <span class="font-bold truncate">Available DAE-MON/S ({programs().length})</span>
-        </div>
-
-        <Show when={error()}>
-          <div class="p-2 text-center text-sm text-red-600 bg-red-100 border border-red-300 mb-2 overflow-hidden text-ellipsis">
-            Error loading programs: {error()}
-          </div>
-        </Show>
-
-        <div class="overflow-y-auto overflow-x-hidden p-1">
-          <Show when={isLoading() && programs().length === 0}>
-            <div class="p-4 text-center text-sm italic">Loading DAE-MONs from wallet...</div>
-          </Show>
-          <Show when={!isLoading() && programs().length === 0 && walletState.isConnected}>
-            <div class="p-4 text-center text-sm italic overflow-hidden">
-              No DAE-MONs found in your wallet for type{' '}
-              <code class="text-xs bg-gray-200 p-0.5 rounded break-all">{PROGRAM_TYPE_STRING}</code>
-              .
-              <br /> Mint one in 'Drives & Programs'.
-            </div>
-          </Show>
-          <Show when={!walletState.isConnected && !isLoading()}>
-            <div class="p-4 text-center text-sm italic">
-              Connect your wallet to see your DAE-MONs.
-            </div>
-          </Show>
-
-          <For each={programs()}>
-            {(program) => (
-              <div class="mb-1 cursor-pointer" onClick={() => handleProgramSelect(program)}>
-                <button
-                  class="w-full font-bold justify-between p-2 flex items-center gap-2 text-sm"
-                  classList={{ active: selectedProgram()?.id === program.id }}
-                >
-                  <div class="w-32 truncate text-left" title={program.name}>
-                    {program.name}
-                  </div>
-                  <div class="progress-indicator segmented w-full">
-                    <span
-                      class="progress-corruption-bar"
-                      style={{ width: `${program.corruption}%` }}
-                    />
-                  </div>
-                </button>
-              </div>
-            )}
-          </For>
-        </div>
+      {/* Bottom button row */}
+      <div
+        style={{
+          'border-top': '2px solid #ffffff',
+          padding: '16px',
+          display: 'flex',
+          'justify-content': 'space-between',
+          gap: '16px',
+          'flex-shrink': '0',
+        }}
+      >
+        <button
+          style={{
+            border: '2px solid #ffffff',
+            color: '#ffffff',
+            padding: '8px 16px',
+            'font-size': '14px',
+            'font-weight': 'bold',
+            cursor: 'pointer',
+            'min-width': '80px',
+          }}
+        >
+          EXIT
+        </button>
+        <button
+          style={{
+            border: '2px solid #ffffff',
+            color: '#ffffff',
+            padding: '8px 16px',
+            'font-size': '14px',
+            'font-weight': 'bold',
+            cursor: 'pointer',
+            'min-width': '80px',
+          }}
+        >
+          BACK
+        </button>
+        <button
+          style={{
+            border: '2px solid #ffffff',
+            color: '#ffffff',
+            padding: '8px 16px',
+            'font-size': '14px',
+            'font-weight': 'bold',
+            cursor: 'pointer',
+            'min-width': '80px',
+          }}
+        >
+          LOAD
+        </button>
+        <button
+          style={{
+            border: '2px solid #ffffff',
+            color: '#ffffff',
+            padding: '8px 16px',
+            'font-size': '14px',
+            'font-weight': 'bold',
+            cursor: 'pointer',
+            'min-width': '80px',
+          }}
+        >
+          START
+        </button>
       </div>
     </div>
   );
