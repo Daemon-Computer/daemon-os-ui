@@ -1,12 +1,17 @@
-import { createSignal, createEffect, For, Show, onMount } from 'solid-js';
-import WasmIframeWrapper from './WasmIframeWrapper';
-import type { WasmCanvasBridgeInterface } from './hooks/createWasmCanvas';
-import type { EventPayload, ViewModel, ViewModelPalette, ViewModelAddon } from '../api/game/events';
-import StatsList from './StatsList';
-import RetroGameCard from './RetroGameCard';
-import { useWallet } from './Wallet/WalletContext';
+import { createSignal, createEffect, Show, onMount } from 'solid-js';
+import WasmIframeWrapper from '../WasmIframeWrapper';
+import type { WasmCanvasBridgeInterface } from '../hooks/createWasmCanvas';
+import type {
+  EventPayload,
+  ViewModel,
+  ViewModelPalette,
+  ViewModelAddon,
+} from '../../api/game/events';
+import { useWallet } from '../Wallet/WalletContext';
 import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
-import { PROGRAM_TYPE_STRING, WASM_ENGINE_URL, WASM_BINDINGS_URL } from '../api/constants';
+import { PROGRAM_TYPE_STRING, WASM_ENGINE_URL, WASM_BINDINGS_URL } from '../../api/constants';
+import TitledContainer from './TitledContainer';
+import ProgramsList from './ProgramsList';
 
 // Enum to match Rust-side ProgramPartName for WASM
 enum ProgramPartName {
@@ -425,28 +430,28 @@ function transformSuiPaletteToViewModelPalette(
   };
 }
 
-function transformSuiPartsToWasmParts(suiParts: SuiProgramPart[] | undefined): ProgramPartData[] {
-  if (!suiParts || !suiParts.length) {
-    // Return some default parts if none provided
-    return DEFAULT_PARTS;
-  }
+// function transformSuiPartsToWasmParts(suiParts: SuiProgramPart[] | undefined): ProgramPartData[] {
+//   if (!suiParts || !suiParts.length) {
+//     // Return some default parts if none provided
+//     return DEFAULT_PARTS;
+//   }
 
-  // Map SUI parts to the format expected by WASM
-  return suiParts.map((part) => {
-    // Try to map part names to ProgramPartName enum values
-    let partName = ProgramPartName.EMPTY;
-    const lowerName = typeof part.name === 'string' ? part.name.toLowerCase() : '';
+//   // Map SUI parts to the format expected by WASM
+//   return suiParts.map((part) => {
+//     // Try to map part names to ProgramPartName enum values
+//     let partName = ProgramPartName.EMPTY;
+//     const lowerName = typeof part.name === 'string' ? part.name.toLowerCase() : '';
 
-    if (lowerName.includes('body')) partName = ProgramPartName.SIMPLE_BODY;
-    else if (lowerName.includes('limb')) partName = ProgramPartName.SIMPLE_LIMB;
-    else if (lowerName.includes('eye')) partName = ProgramPartName.SIMPLE_EYE;
+//     if (lowerName.includes('body')) partName = ProgramPartName.SIMPLE_BODY;
+//     else if (lowerName.includes('limb')) partName = ProgramPartName.SIMPLE_LIMB;
+//     else if (lowerName.includes('eye')) partName = ProgramPartName.SIMPLE_EYE;
 
-    return {
-      name: partName,
-      params: part.params || [],
-    };
-  });
-}
+//     return {
+//       name: partName,
+//       params: part.params || [],
+//     };
+//   });
+// }
 
 function transformSuiPartsToViewModelAddons(suiParts: any): ViewModelAddon[] {
   if (!suiParts) {
@@ -663,20 +668,20 @@ export default function ProgramDatabase() {
       console.log('WebGPU Check Passed.');
     }
 
-    // Listen for WebGPU rendering errors
-    const _handleWebGPUError = (event: any) => {
-      const message = event.detail || event.message || 'Unknown WebGPU error';
-      if (
-        message.includes('uniform buffers') ||
-        message.includes('pipeline') ||
-        message.includes('WebGPU')
-      ) {
-        setWebGPUError(
-          'WebGPU rendering issue detected. This may be due to complex 3D models exceeding hardware limits. Try refreshing the page or using a simpler model.',
-        );
-        console.warn('WebGPU Error detected:', message);
-      }
-    };
+    // // Listen for WebGPU rendering errors
+    // const _handleWebGPUError = (event: any) => {
+    //   const message = event.detail || event.message || 'Unknown WebGPU error';
+    //   if (
+    //     message.includes('uniform buffers') ||
+    //     message.includes('pipeline') ||
+    //     message.includes('WebGPU')
+    //   ) {
+    //     setWebGPUError(
+    //       'WebGPU rendering issue detected. This may be due to complex 3D models exceeding hardware limits. Try refreshing the page or using a simpler model.',
+    //     );
+    //     console.warn('WebGPU Error detected:', message);
+    //   }
+    // };
 
     // Monitor console errors for WebGPU issues
     const originalError = console.error;
@@ -792,7 +797,7 @@ export default function ProgramDatabase() {
                 try {
                   mintDateStr = new Date(creationTimestampFromDisplay).toLocaleDateString();
                 } catch (e) {
-                  /* Ignore parsing error, keep N/A */
+                  console.log('Unable to parse minting date. Reason: ' + e);
                 }
               }
             }
@@ -1034,376 +1039,61 @@ export default function ProgramDatabase() {
   });
 
   return (
-    <div
-      style={{
-        color: '#ffffff',
-        'font-family': "'Pixelated MS Sans Serif', monospace",
-        width: '100vw',
-        height: '100vh',
-        display: 'flex',
-        'flex-direction': 'column',
-        border: '2px solid #ffffff',
-        'box-sizing': 'border-box',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Main content area - retro game interface */}
-      <div
-        style={{
-          flex: '1',
-          display: 'flex',
-          padding: '16px',
-          gap: '16px',
-          'min-height': '0',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Left side - Character portrait and program selector */}
-        <div
-          style={{
-            width: '300px',
-            display: 'flex',
-            'flex-direction': 'column',
-            gap: '16px',
-            'flex-shrink': '0',
-          }}
-        >
-          {/* BEFORE section - character portrait */}
-          <div
-            style={{
-              border: '2px solid #ffffff',
-              'flex-shrink': '0',
-            }}
-          >
-            <div
-              style={{
-                'border-bottom': '2px solid #ffffff',
-                padding: '8px',
-                'text-align': 'center',
-                'font-weight': 'bold',
-                'font-size': '14px',
-              }}
-            >
-              BEFORE
-            </div>
-            <div
-              style={{
-                height: '300px',
-                'background-color': '#ffffff',
-                display: 'flex',
-                'align-items': 'center',
-                'justify-content': 'center',
-                position: 'relative',
-              }}
-            >
-              <Show
-                when={!webGPUSupported()}
-                fallback={
-                  <Show when={webGPUSupported()}>
-                    <div style={{ width: '100%', height: '100%' }}>
-                      <WasmIframeWrapper
-                        instanceId="db-viewer-frame"
-                        jsPath={WASM_BINDINGS_URL}
-                        wasmPath={WASM_ENGINE_URL}
-                        onReady={handleViewerReady}
-                      />
-                    </div>
-                  </Show>
-                }
-              >
-                <div style={{ color: '#000000', 'font-size': '12px', 'text-align': 'center' }}>
-                  <p>WebGPU Not Supported</p>
-                  <p style={{ 'margin-top': '4px', 'font-size': '10px' }}>
-                    Use Chrome/Edge or enable flags
-                  </p>
-                </div>
+    <div class="flex w-full h-full">
+      <div class="flex flex-col w-52 xl:w-2/5 h-full">
+        <TitledContainer title="viewer" class="xl:flex-1 min-h-0">
+          <Show
+            when={!webGPUSupported()}
+            fallback={
+              <Show when={webGPUSupported()}>
+                <WasmIframeWrapper
+                  instanceId="db-viewer-frame"
+                  jsPath={WASM_BINDINGS_URL}
+                  wasmPath={WASM_ENGINE_URL}
+                  onReady={handleViewerReady}
+                />
               </Show>
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '8px',
-                  left: '8px',
-                  color: '#000000',
-                  'font-size': '10px',
-                }}
-              >
-                ©2024 GODCONTROL
-              </div>
-            </div>
-          </div>
-
-          {/* Program selector */}
-          <div
-            style={{
-              border: '2px solid #ffffff',
-              padding: '8px',
-              flex: '1',
-              'min-height': '0',
-            }}
+            }
           >
-            <div
-              style={{
-                'margin-bottom': '8px',
-                display: 'flex',
-                'justify-content': 'space-between',
-                'align-items': 'center',
-              }}
+            <div class="text-black text-xs text-center">
+              <p>WebGPU Not Supported</p>
+              <p class="mt-1 text-[10px]">Use Chrome/Edge or enable flags</p>
+            </div>
+          </Show>
+        </TitledContainer>
+        <TitledContainer title="list" class="flex-1 min-h-0">
+          {/* Refresh button */}
+          <div class="flex justify-between items-center mb-2">
+            <button
+              onClick={fetchProgramsFromWallet}
+              disabled={isLoading() || !walletState.isConnected}
+              class="text-xs"
             >
-              <span style={{ 'font-size': '12px', 'font-weight': 'bold' }}>
-                Available DAE-MON/S ({programs().length})
-              </span>
-              <button
-                onClick={fetchProgramsFromWallet}
-                disabled={isLoading() || !walletState.isConnected}
-                style={{
-                  'background-color': 'transparent',
-                  border: '1px solid #ffffff',
-                  color: '#ffffff',
-                  padding: '2px 6px',
-                  'font-size': '10px',
-                  cursor: 'pointer',
-                }}
-                title="Refresh Program List"
-              >
-                {isLoading() ? '⟳' : '⟲'}
-              </button>
+              {isLoading() ? 'Refreshing...' : 'Refresh'}
+            </button>
+            <span class="font-bold">DAE-MON/S ({programs().length})</span>
+          </div>
+
+          {/* UI Error in the case fetching fails */}
+          <Show when={error()}>
+            <div class="p-2 text-center text-sm text-red-600 bg-red-100 border border-red-300 mb-2 overflow-hidden text-ellipsis">
+              Error loading programs: {error()}
             </div>
+          </Show>
 
-            <Show when={error()}>
-              <div
-                style={{
-                  padding: '4px',
-                  'text-align': 'center',
-                  'font-size': '10px',
-                  color: '#ff6666',
-                  border: '1px solid #ff6666',
-                  'margin-bottom': '8px',
-                }}
-              >
-                Error: {error()}
-              </div>
-            </Show>
-
-            <div
-              style={{
-                flex: '1',
-                'overflow-y': 'auto',
-                border: '1px solid #ffffff',
-              }}
-            >
-              <Show when={isLoading() && programs().length === 0}>
-                <div style={{ padding: '8px', 'text-align': 'center', 'font-size': '10px' }}>
-                  Loading DAE-MONs...
-                </div>
-              </Show>
-              <Show when={!isLoading() && programs().length === 0 && walletState.isConnected}>
-                <div style={{ padding: '8px', 'text-align': 'center', 'font-size': '10px' }}>
-                  No DAE-MONs found. Mint one in 'Drives & Programs'.
-                </div>
-              </Show>
-              <Show when={!walletState.isConnected && !isLoading()}>
-                <div style={{ padding: '8px', 'text-align': 'center', 'font-size': '10px' }}>
-                  Connect wallet to see DAE-MONs.
-                </div>
-              </Show>
-
-              <For
-                each={(() => {
-                  const allPrograms = programs();
-                  const selected = selectedProgram();
-                  if (!selected) return allPrograms;
-
-                  // Move selected program to the front
-                  const filtered = allPrograms.filter((p) => p.id !== selected.id);
-                  return [selected, ...filtered];
-                })()}
-              >
-                {(program) => (
-                  <div
-                    style={{
-                      padding: '4px 8px',
-                      cursor: 'pointer',
-                      'background-color':
-                        selectedProgram()?.id === program.id ? '#ffff00' : 'transparent',
-                      color: selectedProgram()?.id === program.id ? '#000000' : '#ffffff',
-                      'border-bottom': '1px solid #666666',
-                      'font-size': '11px',
-                      'font-weight': selectedProgram()?.id === program.id ? 'bold' : 'normal',
-                    }}
-                    onClick={() => handleProgramSelect(program)}
-                  >
-                    {program.name}
-                  </div>
-                )}
-              </For>
-            </div>
-          </div>
-        </div>
-
-        {/* Center - Stats section */}
-        <div
-          style={{
-            flex: '1',
-            border: '2px solid #ffffff',
-            'min-width': '0',
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              'border-bottom': '2px solid #ffffff',
-              padding: '8px',
-              'text-align': 'center',
-              'font-weight': 'bold',
-              'font-size': '14px',
-            }}
-          >
-            STATS
-          </div>
-          <div
-            style={{
-              padding: '16px',
-              display: 'flex',
-              'flex-direction': 'column',
-              gap: '16px',
-              height: 'calc(100% - 50px)',
-              overflow: 'hidden',
-            }}
-          >
-            <RetroGameCard program={selectedProgram()} canvasElement={null} />
-          </div>
-        </div>
-
-        {/* Right side - PERKS */}
-        <div
-          style={{
-            width: '120px',
-            border: '2px solid #ffffff',
-            'flex-shrink': '0',
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              'border-bottom': '2px solid #ffffff',
-              padding: '8px',
-              'text-align': 'center',
-              'font-weight': 'bold',
-              'font-size': '14px',
-            }}
-          >
-            PERKS
-          </div>
-          <div
-            style={{
-              padding: '16px',
-              display: 'flex',
-              'flex-direction': 'column',
-              'align-items': 'center',
-              gap: '8px',
-            }}
-          >
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                border: '2px solid #ffffff',
-              }}
-            />
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                border: '2px solid #ffffff',
-              }}
-            />
-            <div
-              style={{
-                width: '24px',
-                height: '24px',
-                border: '2px solid #ffffff',
-                display: 'flex',
-                'align-items': 'center',
-                'justify-content': 'center',
-                'font-size': '12px',
-              }}
-            >
-              💀
-            </div>
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                border: '2px solid #ffffff',
-              }}
-            />
-          </div>
-        </div>
+          {/* Program List */}
+          <ProgramsList
+            programs={programs()}
+            selectedProgram={selectedProgram()}
+            isLoading={isLoading()}
+            isWalletConnected={walletState.isConnected}
+            onProgramSelect={handleProgramSelect}
+          />
+        </TitledContainer>
       </div>
-
-      {/* Bottom button row */}
-      <div
-        style={{
-          'border-top': '2px solid #ffffff',
-          padding: '16px',
-          display: 'flex',
-          'justify-content': 'space-between',
-          gap: '16px',
-          'flex-shrink': '0',
-        }}
-      >
-        <button
-          style={{
-            border: '2px solid #ffffff',
-            color: '#ffffff',
-            padding: '8px 16px',
-            'font-size': '14px',
-            'font-weight': 'bold',
-            cursor: 'pointer',
-            'min-width': '80px',
-          }}
-        >
-          EXIT
-        </button>
-        <button
-          style={{
-            border: '2px solid #ffffff',
-            color: '#ffffff',
-            padding: '8px 16px',
-            'font-size': '14px',
-            'font-weight': 'bold',
-            cursor: 'pointer',
-            'min-width': '80px',
-          }}
-        >
-          BACK
-        </button>
-        <button
-          style={{
-            border: '2px solid #ffffff',
-            color: '#ffffff',
-            padding: '8px 16px',
-            'font-size': '14px',
-            'font-weight': 'bold',
-            cursor: 'pointer',
-            'min-width': '80px',
-          }}
-        >
-          LOAD
-        </button>
-        <button
-          style={{
-            border: '2px solid #ffffff',
-            color: '#ffffff',
-            padding: '8px 16px',
-            'font-size': '14px',
-            'font-weight': 'bold',
-            cursor: 'pointer',
-            'min-width': '80px',
-          }}
-        >
-          START
-        </button>
+      <div class="w-full h-full grid grid-rows-2">
+        <TitledContainer title="stats">Stats Placeholder</TitledContainer>
+        <TitledContainer title="corruption"> Corruption Placeholder</TitledContainer>
       </div>
     </div>
   );

@@ -1,26 +1,20 @@
-import "./98.css";
-import type {
-  Component} from "solid-js";
-import {
-  For,
-  onMount,
-  createSignal,
-  Show,
-} from "solid-js";
-import Desktop from "./components/Desktop/Desktop";
-import DesktopGrid from "./components/Desktop/DesktopGrid";
-import DesktopIcon from "./components/Desktop/DesktopIcon";
-import { usePrograms } from "./components/ProgramWindow/programContext";
-import ProgramWindow from "./components/ProgramWindow/ProgramWindow";
-import ProgramDatabase from "./components/ProgramDatabase";
-import DrivesAndPrograms from "./components/DrivesAndPrograms";
-import { WalletProvider } from "./components/Wallet/WalletContext";
-import { ThemeProvider } from "./components/Theme/ThemeContext";
-import SplashScreen from "./components/SplashScreen";
-import "./fadeEffects.css";
-import WalletApp from "./components/Wallet/WalletApp";
-import WGPUNotificationApp from "./components/WGPUNotification/WGPUNotificationApp";
-import WGPUNotificationWindow from "./components/WGPUNotification/WGPUNotificationWindow";
+import './98.css';
+import type { Component } from 'solid-js';
+import { For, onMount, createSignal, Show } from 'solid-js';
+import Desktop from './components/Desktop/Desktop';
+import DesktopGrid from './components/Desktop/DesktopGrid';
+import DesktopIcon from './components/Desktop/DesktopIcon';
+import { usePrograms } from './components/ProgramWindow/programContext';
+import ProgramWindow from './components/ProgramWindow/ProgramWindow';
+import ProgramDatabase from './components/ProgramDatabase/ProgramDatabase';
+import DrivesAndPrograms from './components/DrivesAndPrograms';
+import { WalletProvider } from './components/Wallet/WalletContext';
+import { ThemeProvider } from './components/Theme/ThemeContext';
+import SplashScreen from './components/SplashScreen';
+import './fadeEffects.css';
+import WalletApp from './components/Wallet/WalletApp';
+import WGPUNotificationApp from './components/WGPUNotification/WGPUNotificationApp';
+import WGPUNotificationWindow from './components/WGPUNotification/WGPUNotificationWindow';
 
 interface ProgramConfig {
   label: string;
@@ -40,16 +34,16 @@ const DEFAULT_HEIGHT = 480;
 
 export const AVAILABLE_PROGRAMS: ProgramConfig[] = [
   {
-    label: "WGPU Support Check",
-    icon: "/icons/viewer.avif",
+    label: 'WGPU Support Check',
+    icon: '/icons/viewer.avif',
     component: WGPUNotificationApp,
     defaultWidth: 500,
     defaultHeight: 400,
     showOnDesktop: false,
   },
   {
-    label: "Wallet",
-    icon: "/icons/wallet.avif",
+    label: 'Wallet',
+    icon: '/icons/wallet.avif',
     component: WalletApp,
     defaultWidth: 480,
     defaultHeight: 520,
@@ -69,15 +63,15 @@ export const AVAILABLE_PROGRAMS: ProgramConfig[] = [
   //   defaultHeight: 540,
   // },
   {
-    label: "Program Viewer",
-    icon: "/icons/viewer.avif",
+    label: 'Program Viewer',
+    icon: '/icons/viewer.avif',
     component: ProgramDatabase,
     defaultWidth: 640,
     defaultHeight: 512,
   },
   {
-    label: "Drives & Programs",
-    icon: "/icons/store.avif",
+    label: 'Drives & Programs',
+    icon: '/icons/store.avif',
     component: DrivesAndPrograms,
     defaultWidth: 400,
     defaultHeight: 520,
@@ -85,13 +79,8 @@ export const AVAILABLE_PROGRAMS: ProgramConfig[] = [
 ];
 
 export default function App() {
-  const {
-    registerProgram,
-    activePrograms,
-    restoreProgram,
-    isRunning,
-    unregisterProgram,
-  } = usePrograms();
+  const { registerProgram, activePrograms, restoreProgram, isRunning, unregisterProgram } =
+    usePrograms();
   const [isLoading, setIsLoading] = createSignal(true);
   const [fadeIn, setFadeIn] = createSignal(false);
   const [showOSUI, setShowOSUI] = createSignal(false);
@@ -101,16 +90,14 @@ export default function App() {
 
     // Check if wallet is connected
     if (
-      programConfig.label !== "Wallet" &&
-      programConfig.label !== "WGPU Support Check" &&
+      programConfig.label !== 'Wallet' &&
+      programConfig.label !== 'WGPU Support Check' &&
       walletState &&
       !walletState.isConnected
     ) {
       // Open wallet if it's not already running
-      if (!isRunning("Wallet")) {
-        const walletProgram = AVAILABLE_PROGRAMS.find(
-          (p) => p.label === "Wallet",
-        );
+      if (!isRunning('Wallet')) {
+        const walletProgram = AVAILABLE_PROGRAMS.find((p) => p.label === 'Wallet');
         if (walletProgram) {
           registerProgram({
             label: walletProgram.label,
@@ -122,9 +109,7 @@ export default function App() {
         }
       }
       // Bring wallet to front if it's minimized
-      const existingWalletProgram = activePrograms.find(
-        (p) => p.label === "Wallet",
-      );
+      const existingWalletProgram = activePrograms.find((p) => p.label === 'Wallet');
       if (existingWalletProgram && existingWalletProgram.isMinimized) {
         restoreProgram(existingWalletProgram.id);
       }
@@ -132,9 +117,7 @@ export default function App() {
     }
 
     if (isRunning(programConfig.label)) {
-      const existingProgram = activePrograms.find(
-        (p) => p.label === programConfig.label,
-      );
+      const existingProgram = activePrograms.find((p) => p.label === programConfig.label);
       if (existingProgram) {
         if (existingProgram.isMinimized) {
           restoreProgram(existingProgram.id);
@@ -157,35 +140,31 @@ export default function App() {
   // Prevent closing the wallet app if not connected
   const handleCloseProgram = (programId: string) => {
     const program = activePrograms.find((p) => p.id === programId);
-    if (program && program.label === "Wallet") {
+    if (program && program.label === 'Wallet') {
       const walletState = window.walletState;
       if (walletState && !walletState.isConnected) {
         // Don't close the wallet if not connected
         return;
       }
     }
-    
+
     // Launch wallet when WGPU notification is closed
-    if (program && program.label === "WGPU Support Check") {
+    if (program && program.label === 'WGPU Support Check') {
       unregisterProgram(programId);
       setTimeout(() => {
-        const walletProgram = AVAILABLE_PROGRAMS.find(
-          (p) => p.label === "Wallet",
-        );
+        const walletProgram = AVAILABLE_PROGRAMS.find((p) => p.label === 'Wallet');
         if (walletProgram) {
           launchProgram(walletProgram);
         }
       }, 100);
       return;
     }
-    
+
     unregisterProgram(programId);
   };
 
   onMount(() => {
-    const handleLaunchProgramEvent = (
-      event: CustomEvent<LaunchProgramEvent>,
-    ) => {
+    const handleLaunchProgramEvent = (event: CustomEvent<LaunchProgramEvent>) => {
       const programLabel = event.detail.programLabel;
       const program = AVAILABLE_PROGRAMS.find((p) => p.label === programLabel);
       if (program) {
@@ -194,15 +173,9 @@ export default function App() {
         console.warn(`Program "${programLabel}" not found`);
       }
     };
-    window.addEventListener(
-      "launchProgram",
-      handleLaunchProgramEvent as EventListener,
-    );
+    window.addEventListener('launchProgram', handleLaunchProgramEvent as EventListener);
     return () =>
-      window.removeEventListener(
-        "launchProgram",
-        handleLaunchProgramEvent as EventListener,
-      );
+      window.removeEventListener('launchProgram', handleLaunchProgramEvent as EventListener);
   });
 
   const handleLoadingComplete = () => {
@@ -213,9 +186,7 @@ export default function App() {
         setShowOSUI(true);
         // Launch WGPU notification first after splash screen
         setTimeout(() => {
-          const wgpuProgram = AVAILABLE_PROGRAMS.find(
-            (p) => p.label === "WGPU Support Check",
-          );
+          const wgpuProgram = AVAILABLE_PROGRAMS.find((p) => p.label === 'WGPU Support Check');
           if (wgpuProgram) {
             launchProgram(wgpuProgram);
           }
@@ -225,11 +196,8 @@ export default function App() {
   };
 
   return (
-    <Show
-      when={!isLoading()}
-      fallback={<SplashScreen onLoaded={handleLoadingComplete} />}
-    >
-      <div class={`fade-container ${fadeIn() ? "fade-in" : ""}`} />
+    <Show when={!isLoading()} fallback={<SplashScreen onLoaded={handleLoadingComplete} />}>
+      <div class={`fade-container ${fadeIn() ? 'fade-in' : ''}`} />
 
       <Show when={showOSUI()}>
         <div class="fixed inset-0 z-50">
@@ -240,38 +208,34 @@ export default function App() {
                   <For each={activePrograms}>
                     {(program) => {
                       const programComponent = program.component as Component;
-                      
+
                       // Use special window for WGPU notification
-                      if (program.label === "WGPU Support Check") {
+                      if (program.label === 'WGPU Support Check') {
                         return (
                           <WGPUNotificationWindow
                             label={program.label}
                             programId={program.id}
                             onClose={() => handleCloseProgram(program.id)}
                           >
-                            <WalletProvider>
-                              {programComponent({})}
-                            </WalletProvider>
+                            <WalletProvider>{programComponent({})}</WalletProvider>
                           </WGPUNotificationWindow>
                         );
                       }
-                      
+
                       return (
                         <ProgramWindow
                           label={program.label}
                           programId={program.id}
                           onClose={() => handleCloseProgram(program.id)}
                         >
-                          <WalletProvider>
-                            {programComponent({})}
-                          </WalletProvider>
+                          <WalletProvider>{programComponent({})}</WalletProvider>
                         </ProgramWindow>
                       );
                     }}
                   </For>
 
                   <DesktopGrid>
-                    <For each={AVAILABLE_PROGRAMS.filter(p => p.showOnDesktop !== false)}>
+                    <For each={AVAILABLE_PROGRAMS.filter((p) => p.showOnDesktop !== false)}>
                       {(programConfig) => (
                         <DesktopIcon
                           appName={programConfig.label}
