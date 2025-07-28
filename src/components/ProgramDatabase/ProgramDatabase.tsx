@@ -12,6 +12,7 @@ import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
 import { PROGRAM_TYPE_STRING, WASM_ENGINE_URL, WASM_BINDINGS_URL } from '../../api/constants';
 import TitledContainer from './TitledContainer';
 import ProgramsList from './ProgramsList';
+import StatsList from '../StatsList';
 
 // Enum to match Rust-side ProgramPartName for WASM
 enum ProgramPartName {
@@ -1092,7 +1093,9 @@ export default function ProgramDatabase() {
         </TitledContainer>
       </div>
       <div class="w-full h-full grid grid-rows-2">
-        <TitledContainer title="stats">Stats Placeholder</TitledContainer>
+        <TitledContainer title="stats">
+          <StatsList program={displayData()} />
+        </TitledContainer>
         <TitledContainer title="corruption"> Corruption Placeholder</TitledContainer>
       </div>
     </div>
